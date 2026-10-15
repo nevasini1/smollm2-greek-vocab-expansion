@@ -23,8 +23,10 @@ added without touching the training loop.
 
 - **Matched tokens:** Exp2 gains an extra 0.122 BPB of Greek for an extra 0.084 BPB of English.
 - **Matched Greek text:** Exp2 matches Exp1's Greek with about a third of the compute and forgets 0.044 BPB less English.
-- **Writeup (1–2 pages):** [`docs/writeup.md`](docs/writeup.md). Raw outputs:
-  [`results/t4_run/`](results/t4_run/).
+- **Writeup (1–2 pages):** [`docs/writeup.md`](docs/writeup.md).
+- **The Colab run with all its outputs** (logs, tables, plots):
+  [`results/t4_run/colab_run_all.executed.ipynb`](results/t4_run/colab_run_all.executed.ipynb).
+  Raw output files: [`results/t4_run/`](results/t4_run/).
 
 ## Documentation
 

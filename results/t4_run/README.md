@@ -3,6 +3,10 @@
 Raw outputs of the study, as written by `vocabx` to the run's `workdir` (model weights and
 checkpoints omitted). The writeup is [`docs/writeup.md`](../../docs/writeup.md).
 
+**The executed Colab notebook, with every cell's output (logs, QA report, budget, results tables and
+plots), is [`colab_run_all.executed.ipynb`](colab_run_all.executed.ipynb).** Its first cell lists how it
+differs from the notebook in the repo today and what was cleaned before publishing.
+
 ## Provenance
 
 | | |
@@ -49,6 +53,7 @@ now use the newer plotting code). At the time:
 ## Layout
 
 ```
+colab_run_all.executed.ipynb         the notebook as run on Colab, with all outputs
 budget.json, calibration/            matched step budget and the measurement behind it
 data/<key>/manifest.json             data sizes, cleaning and decontamination counts, eval-set hashes
 tokenizers/ad1bfd17b231/             the +8,000-token tokenizer (tokenizer.json, meta.json, qa.json)
