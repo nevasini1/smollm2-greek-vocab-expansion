@@ -1,0 +1,8 @@
+14:49:29 INFO numexpr.utils | NumExpr defaulting to 2 threads.
+14:49:31 WARNING huggingface_hub.utils._http | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+14:49:32 INFO vocabx | expanded vocab 49152 -> 57152 with fvt_mean (new-row norm 2.57 vs old 3.18)
+14:49:48 INFO vocabx | [interp exp2_extend] alpha=0.00  EL 2.0617  EN 0.9054
+14:50:02 INFO vocabx | [interp exp2_extend] alpha=0.25  EL 1.4994  EN 0.9205
+14:50:17 INFO vocabx | [interp exp2_extend] alpha=0.50  EL 1.0483  EN 0.9604
+14:50:31 INFO vocabx | [interp exp2_extend] alpha=0.75  EL 0.8170  EN 1.0223
+14:50:45 INFO vocabx | [interp exp2_extend] alpha=1.00  EL 0.7534  EN 1.1198

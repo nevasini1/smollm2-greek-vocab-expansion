@@ -1,0 +1,38 @@
+{
+  "max_steps": 453,
+  "from_calibration": {
+    "run_name": "exp2_extend",
+    "environment": {
+      "python": "3.13.15",
+      "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+      "torch": "2.11.0+cu130",
+      "transformers": "5.18.0",
+      "tokenizers": "0.23.2",
+      "datasets": "4.8.5",
+      "numpy": "2.1.3",
+      "gpu": "Tesla T4",
+      "cuda_capability": "7.5"
+    },
+    "device": "cuda",
+    "amp_dtype": "torch.float16",
+    "tokens_per_step": 32768,
+    "seconds_per_step": 3.5687127113342285,
+    "tokens_per_second": 9182.022384690385,
+    "peak_memory_gb": 9.40194816,
+    "target_minutes": 27.0,
+    "suggested_max_steps": 453,
+    "suggested_tokens_M": 14.843904,
+    "greek_bytes_per_token": 6.101037984039212,
+    "greek_MB_needed_at_suggested": 90.56322213543159,
+    "greek_MB_available": 150.12017,
+    "sdpa": {
+      "checked": true,
+      "efficient": true,
+      "flash": "unavailable: RuntimeError",
+      "math": true,
+      "training_uses_fused_kernel": true
+    },
+    "pool_cap_steps": 750,
+    "recommended_max_steps": 453
+  }
+}

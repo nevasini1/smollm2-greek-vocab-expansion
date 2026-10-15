@@ -1,0 +1,150 @@
+{
+  "tag": "final",
+  "run": "base",
+  "vocab_size": 49152,
+  "intrinsic": {
+    "wikipedia_el": {
+      "language": "el",
+      "chunks": 1441,
+      "docs": 500,
+      "bpb": 1.2997476331026792,
+      "bpc": 2.3135508802858857,
+      "word_ppl": 50219.62610993874,
+      "token_ppl_within_model": 6.740429755991268,
+      "tokens_per_word": 5.672672727272727,
+      "bytes_per_token": 2.117980835285809,
+      "mean_mass_new": 0.0
+    },
+    "fineweb2_el": {
+      "language": "el",
+      "chunks": 1246,
+      "docs": 500,
+      "bpb": 1.282012884375618,
+      "bpc": 2.3067413867643167,
+      "word_ppl": 37387.55644112665,
+      "token_ppl_within_model": 6.827717205965229,
+      "tokens_per_word": 5.481075429846993,
+      "bytes_per_token": 2.161759323222221,
+      "mean_mass_new": 0.0
+    },
+    "belebele_el": {
+      "language": "el",
+      "chunks": 496,
+      "docs": 486,
+      "bpb": 1.2735078375124183,
+      "bpc": 2.314644138192272,
+      "word_ppl": 41791.29966637899,
+      "token_ppl_within_model": 6.90792924512322,
+      "tokens_per_word": 5.505566862205196,
+      "bytes_per_token": 2.1894276767852485,
+      "mean_mass_new": 0.0
+    },
+    "fineweb_edu_en": {
+      "language": "en",
+      "chunks": 1579,
+      "docs": 500,
+      "bpb": 0.9177659486641557,
+      "bpc": 0.9224256450890901,
+      "word_ppl": 49.667496334190325,
+      "token_ppl_within_model": 19.168888028859918,
+      "tokens_per_word": 1.322373569765714,
+      "bytes_per_token": 4.642463311034033,
+      "mean_mass_new": 0.0
+    },
+    "bbc_news_2025_en": {
+      "language": "en",
+      "chunks": 1698,
+      "docs": 500,
+      "bpb": 1.0485943096135812,
+      "bpc": 1.0493397507685338,
+      "word_ppl": 71.8414395856128,
+      "token_ppl_within_model": 26.03242120660176,
+      "tokens_per_word": 1.3114489072677227,
+      "bytes_per_token": 4.484324920521638,
+      "mean_mass_new": 0.0
+    },
+    "belebele_en": {
+      "language": "en",
+      "chunks": 488,
+      "docs": 483,
+      "bpb": 0.9265963775843978,
+      "bpc": 0.9274259931094454,
+      "word_ppl": 49.018984283013765,
+      "token_ppl_within_model": 21.614107156561374,
+      "tokens_per_word": 1.2664397014534503,
+      "bytes_per_token": 4.785148576273289,
+      "mean_mass_new": 0.0
+    }
+  },
+  "downstream": {
+    "hellaswag_el": {
+      "task": "hellaswag_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.264,
+      "acc_norm": 0.294,
+      "gold_bpb": 1.174006641084843,
+      "acc_norm_se": 0.02037469018169356
+    },
+    "hellaswag_en": {
+      "task": "hellaswag_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.348,
+      "acc_norm": 0.41,
+      "gold_bpb": 0.8986381200271251,
+      "acc_norm_se": 0.02199545407578575
+    },
+    "arc_easy_el": {
+      "task": "arc_easy_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.278,
+      "acc_norm": 0.254,
+      "gold_bpb": 1.6536622408999821,
+      "acc_norm_se": 0.019467100451787882
+    },
+    "arc_easy_en": {
+      "task": "arc_easy_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.648,
+      "acc_norm": 0.558,
+      "gold_bpb": 1.1566170788518657,
+      "acc_norm_se": 0.022209727598509622
+    },
+    "piqa_en": {
+      "task": "piqa_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.5,
+      "acc": 0.658,
+      "acc_norm": 0.674,
+      "gold_bpb": 1.182123288297008,
+      "acc_norm_se": 0.020963015050321363
+    }
+  },
+  "generation": {
+    "el": {
+      "script_ratio": 1.0,
+      "distinct_2": 0.3296301870414931,
+      "rep_4gram": 0.6164359071379047,
+      "bytes_per_token": 1.9646104571252314,
+      "short_or_empty": 0,
+      "n": 16
+    },
+    "en": {
+      "script_ratio": 1.0,
+      "distinct_2": 0.5313619198291054,
+      "rep_4gram": 0.3801364871230488,
+      "bytes_per_token": 4.3155766613328606,
+      "short_or_empty": 0,
+      "n": 16
+    }
+  },
+  "eval_seconds": 321.7594211101532
+}

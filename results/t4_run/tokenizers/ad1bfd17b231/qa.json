@@ -1,0 +1,136 @@
+{
+  "n_base": 49152,
+  "n_new": 8000,
+  "original_ids_changed": 0,
+  "original_merges_prefix_intact": true,
+  "merges_format": "pairs",
+  "english_invariance": {
+    "docs_without_greek": 3761,
+    "changed_without_greek": 0,
+    "synthetic_non_greek": 502,
+    "changed_synthetic": 0,
+    "docs_with_greek_letters": 4,
+    "token_change_in_docs_with_greek_pct": -0.8849557522123894
+  },
+  "roundtrip_failures": {
+    "base": 0,
+    "extended": 0
+  },
+  "self_tokenization": {
+    "failures": 0,
+    "partial_utf8_tokens": 3,
+    "examples": []
+  },
+  "greek": {
+    "base": {
+      "tokens": 1941843,
+      "bytes_per_token": 2.1439338813694,
+      "chars_per_token": 1.1962408907414246,
+      "tokens_per_word": 5.574770258980785,
+      "pct_continued_words": 97.69412075434865
+    },
+    "extended": {
+      "tokens": 671770,
+      "bytes_per_token": 6.197333908927162,
+      "chars_per_token": 3.457897792399184,
+      "tokens_per_word": 1.9285613805418471,
+      "pct_continued_words": 42.90049292762261
+    }
+  },
+  "english": {
+    "base": {
+      "tokens": 623593,
+      "bytes_per_token": 4.5753560415206715,
+      "chars_per_token": 4.563409146670986,
+      "tokens_per_word": 1.3124736913000286,
+      "pct_continued_words": 18.884805778653334
+    },
+    "extended": {
+      "tokens": 623586,
+      "bytes_per_token": 4.575407401705619,
+      "chars_per_token": 4.563460372747303,
+      "tokens_per_word": 1.3124589584280446,
+      "pct_continued_words": 18.884805778653334
+    }
+  },
+  "greek_token_reduction_x": 2.890636676243357,
+  "new_token_usage_heldout": {
+    "used": 7931,
+    "unused": 69,
+    "pct_used": 99.1375,
+    "share_of_greek_tokens_that_are_new": 0.7498742129002486
+  },
+  "examples_new_tokens": [
+    "ικ",
+    " τη",
+    "ει",
+    " και",
+    "ια",
+    " του",
+    " στ",
+    " ο",
+    "ία",
+    "ού",
+    "ων",
+    "ση",
+    " ν",
+    " το",
+    "ετ",
+    " της",
+    "ες",
+    "εί",
+    "ρα",
+    "να",
+    "ρο",
+    " έ",
+    "πό",
+    "λλ",
+    "ξ",
+    "ρι",
+    " με",
+    "ντ",
+    " να",
+    " την",
+    " Α",
+    "ική",
+    "ολ",
+    "τη",
+    "ίν",
+    "ών",
+    " από",
+    " η",
+    " ό",
+    "εν"
+  ],
+  "vocab_size_curve": {
+    "1000": {
+      "tokens": 973165,
+      "bytes_per_token": 4.277982664810181,
+      "chars_per_token": 2.386966239024215,
+      "tokens_per_word": 2.7938259164520693,
+      "pct_continued_words": 60.311431499711475
+    },
+    "2000": {
+      "tokens": 860264,
+      "bytes_per_token": 4.839424874224656,
+      "chars_per_token": 2.700231556824417,
+      "tokens_per_word": 2.469702319946487,
+      "pct_continued_words": 55.288565055249805
+    },
+    "4000": {
+      "tokens": 758008,
+      "bytes_per_token": 5.492267891631751,
+      "chars_per_token": 3.0644953615265274,
+      "tokens_per_word": 2.176139087696331,
+      "pct_continued_words": 49.839949243096285
+    },
+    "8000": {
+      "tokens": 671770,
+      "bytes_per_token": 6.197333908927162,
+      "chars_per_token": 3.457897792399184,
+      "tokens_per_word": 1.9285613805418471,
+      "pct_continued_words": 42.90049292762261
+    }
+  },
+  "problems": []
+}

@@ -341,7 +341,8 @@ def make_plots(loaded: Dict[str, Dict[str, Any]], out_dir: str) -> None:
         v = [row["sets"][s]["bpb"] for s in sets if s in row["sets"]]
         return float(np.mean(v)) if v else np.nan
 
-    fig, axes = plt.subplots(1, 4, figsize=(20, 4.2))
+    fig, axes = plt.subplots(2, 2, figsize=(11, 7.5))
+    axes = axes.ravel()
     for r, L in runs.items():
         dev = L["dev"]
         steps = [d["step"] for d in dev]
@@ -362,9 +363,9 @@ def make_plots(loaded: Dict[str, Dict[str, Any]], out_dir: str) -> None:
         ax.grid(alpha=0.3)
         if anchor is not None:
             ax.axhline(lang_bpb(anchor, en_sets if i == 3 else el_sets), color="gray", ls="--", lw=1, label="original model")
-    axes[0].legend(fontsize=8)
+    axes[0].legend(fontsize=9)
     fig.tight_layout()
-    fig.savefig(os.path.join(out_dir, "learning_curves.png"), dpi=130)
+    fig.savefig(os.path.join(out_dir, "learning_curves.png"), dpi=110)
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(6, 5))

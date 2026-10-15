@@ -1,0 +1,150 @@
+{
+  "tag": "final",
+  "run": "exp1_finetune",
+  "vocab_size": 49152,
+  "intrinsic": {
+    "wikipedia_el": {
+      "language": "el",
+      "chunks": 1441,
+      "docs": 500,
+      "bpb": 0.8618393462615938,
+      "bpc": 1.5340740982530454,
+      "word_ppl": 1309.3775708934331,
+      "token_ppl_within_model": 3.5439523797826578,
+      "tokens_per_word": 5.672672727272727,
+      "bytes_per_token": 2.117980835285809,
+      "mean_mass_new": 0.0
+    },
+    "fineweb2_el": {
+      "language": "el",
+      "chunks": 1246,
+      "docs": 500,
+      "bpb": 0.9080863518755621,
+      "bpc": 1.6339308256230052,
+      "word_ppl": 1733.7769719377777,
+      "token_ppl_within_model": 3.8988918515712547,
+      "tokens_per_word": 5.481075429846993,
+      "bytes_per_token": 2.161759323222221,
+      "mean_mass_new": 0.0
+    },
+    "belebele_el": {
+      "language": "el",
+      "chunks": 496,
+      "docs": 486,
+      "bpb": 0.8507666370503564,
+      "bpc": 1.546297518878801,
+      "word_ppl": 1222.1244336165366,
+      "token_ppl_within_model": 3.6368565488158873,
+      "tokens_per_word": 5.505566862205196,
+      "bytes_per_token": 2.1894276767852485,
+      "mean_mass_new": 0.0
+    },
+    "fineweb_edu_en": {
+      "language": "en",
+      "chunks": 1579,
+      "docs": 500,
+      "bpb": 1.0594921819584284,
+      "bpc": 1.064871453154645,
+      "word_ppl": 90.77967996464695,
+      "token_ppl_within_model": 30.24560435245613,
+      "tokens_per_word": 1.322373569765714,
+      "bytes_per_token": 4.642463311034033,
+      "mean_mass_new": 0.0
+    },
+    "bbc_news_2025_en": {
+      "language": "en",
+      "chunks": 1698,
+      "docs": 500,
+      "bpb": 1.204937095387567,
+      "bpc": 1.2057936799520608,
+      "word_ppl": 135.8801113738339,
+      "token_ppl_within_model": 42.32181059611181,
+      "tokens_per_word": 1.3114489072677227,
+      "bytes_per_token": 4.484324920521638,
+      "mean_mass_new": 0.0
+    },
+    "belebele_en": {
+      "language": "en",
+      "chunks": 488,
+      "docs": 483,
+      "bpb": 1.0857169769502626,
+      "bpc": 1.086689058950231,
+      "word_ppl": 95.6408978960003,
+      "token_ppl_within_model": 36.639224085982114,
+      "tokens_per_word": 1.2664397014534503,
+      "bytes_per_token": 4.785148576273289,
+      "mean_mass_new": 0.0
+    }
+  },
+  "downstream": {
+    "hellaswag_el": {
+      "task": "hellaswag_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.26,
+      "acc_norm": 0.324,
+      "gold_bpb": 0.84584830397262,
+      "acc_norm_se": 0.020929596269398033
+    },
+    "hellaswag_en": {
+      "task": "hellaswag_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.34,
+      "acc_norm": 0.404,
+      "gold_bpb": 1.0351826030226554,
+      "acc_norm_se": 0.021944657664224338
+    },
+    "arc_easy_el": {
+      "task": "arc_easy_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.294,
+      "acc_norm": 0.24,
+      "gold_bpb": 1.257485657867797,
+      "acc_norm_se": 0.019099738218101316
+    },
+    "arc_easy_en": {
+      "task": "arc_easy_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.584,
+      "acc_norm": 0.52,
+      "gold_bpb": 1.264626853076552,
+      "acc_norm_se": 0.022342784070030305
+    },
+    "piqa_en": {
+      "task": "piqa_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.5,
+      "acc": 0.67,
+      "acc_norm": 0.652,
+      "gold_bpb": 1.3362754242855075,
+      "acc_norm_se": 0.02130239423163509
+    }
+  },
+  "generation": {
+    "el": {
+      "script_ratio": 1.0,
+      "distinct_2": 0.5544993951713223,
+      "rep_4gram": 0.377959728796276,
+      "bytes_per_token": 1.9957508621501263,
+      "short_or_empty": 0,
+      "n": 16
+    },
+    "en": {
+      "script_ratio": 0.6045924704760082,
+      "distinct_2": 0.578530218074049,
+      "rep_4gram": 0.32413894440874874,
+      "bytes_per_token": 3.1669345366562354,
+      "short_or_empty": 0,
+      "n": 16
+    }
+  },
+  "eval_seconds": 341.7187328338623
+}

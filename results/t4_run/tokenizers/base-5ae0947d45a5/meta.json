@@ -1,0 +1,17 @@
+{
+  "extender": "none",
+  "tokenizer_config": {
+    "extender": "none",
+    "num_new_tokens": 8000,
+    "train_mb": 60.0,
+    "min_frequency": 2,
+    "params": {}
+  },
+  "base_model": "HuggingFaceTB/SmolLM2-135M",
+  "base_revision": "main",
+  "n_base": 49152,
+  "n_new": 0,
+  "new_tokens": [],
+  "parents": null,
+  "info": {}
+}

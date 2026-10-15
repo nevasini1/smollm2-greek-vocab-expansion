@@ -1,112 +1,127 @@
-# Vocabulary expansion on SmolLM2-135M → Greek: writeup
+# Vocabulary expansion vs. fine-tuning: SmolLM2-135M → Greek
 
-> Fill the `⟨…⟩` placeholders from `artifacts/results/main/results.md` after running
-> `notebooks/colab_run_all.ipynb`. Everything else describes the setup as implemented.
-> Full rationale: `docs/design.md`.
+**Bottom line.** At the brief's matched budget (453 steps, 14.8M tokens, ≤30 min per arm on a free
+Colab T4), adding 8,000 Greek tokens (Exp2) beats plain continued training (Exp1) on Greek: 0.751 vs
+0.874 bits per byte (BPB), −14%. It is worse on English: 1.201 vs 1.117 (+7.6%). Exp2 buys **0.122 BPB of
+extra Greek for 0.084 BPB of extra English loss**. Most of that extra loss reflects how far Exp2 gets in
+the same budget, not a worse trade-off:
+- Each Exp2 token carries 2.8× more Greek text. Stopped at Exp1's amount of Greek, Exp2 matches Exp1's
+  Greek with about a third of the compute and loses 0.044 BPB *less* English.
+- During training, at every Greek level below ~1.1 BPB, Exp2 had given up less English than Exp1 (Fig. 2).
 
 ## 1. What was done
-
-SmolLM2's tokenizer encodes Greek almost character by character:
-- 60 of 49,152 vocabulary entries contain Greek;
-- 5.7 tokens per word vs ~1.4 for English;
-- 2.1 bytes per token.
-
-I compared two adaptations under one budget of ⟨600⟩ optimizer steps × 32,768 tokens
-(⟨19.7M⟩ tokens; ≤30 min on a T4). The two arms share the same document order, optimizer,
-schedule and shared-parameter learning rates.
-
-- **Exp1:** continued pretraining with the original tokenizer.
-- **Exp2:** +8,000 Greek tokens, initialised and trained as described in §2.
-- **Baseline:** the off-the-shelf model, evaluated on everything.
-- **Exp2 at step 0:** surgery only, no training. This separates the cost of the swap from the
-  effect of training.
-
-**Data.**
-- Training: 150 MB of Greek, Wikipedia and FineWeb-2 in equal parts.
-- Evaluation: held-out docs drawn *before* the training pool. Training docs sharing a paragraph
-  with, or MinHash-near-duplicating, any held-out doc are removed across sources.
-- Text: everything is NFC-normalised once in the pipeline, with control bytes the vocab cannot
-  represent stripped.
+- **Data.** 150 MB of cleaned Greek, half Wikipedia-el and half FineWeb-2. It is more than ~100 MB
+  because Exp2 reads 2.8× more text per token; both arms stay under one epoch (0.21, 0.60).
+- **Arms.** Both train all weights with the same document order, AdamW, and a WSD schedule peaking at
+  3e-4. Exp2's 8,000 new rows get 10× that rate and no weight decay. fp16 + GradScaler, 0 skipped steps.
+- **Budget.** Calibrated once on the slower arm (Exp2) and locked in `budget.json`. Exp2 uses 3% more
+  FLOPs for its larger output layer (Table 1).
+- **Supplementary run, outside the matched budget.** Exp2 from step 0, stopped at Exp1's 31.8 MB of
+  Greek (159 steps). Its own WSD schedule ends annealed. It separates "better tokenizer" from "more
+  Greek per step".
 
 ## 2. How the existing vocabulary is modified
+**Continued BPE, append-only.** Greek training text (60 MB) is segmented with SmolLM2's pre-tokenizer and
+all 48,900 of its merges. New merges are learned *on top of* that segmentation and accepted only if they
+form a new all-Greek string (first: ` και`, ` της`, ` του`). The 8,000 merges are appended at the lowest
+priority, as ids 49,152–57,151 (57,152 = 893×64). Nothing is removed or renumbered and every new token is
+reachable. By contrast, a separately trained Greek BPE would leave 5–17% unreachable, because SmolLM2
+already merges the space with the UTF-8 lead byte.
 
-**Continued BPE, append-only.**
-1. Greek training text is segmented with SmolLM2's own pre-tokenizer and its 48,900 merges.
-2. New merges are learned *on top of that segmentation*. A merge is accepted only if it creates
-   a new string made of Greek characters.
-3. The 8,000 merges are appended after the original ones (lowest priority), as ids
-   49,152–57,151. Nothing is removed or renumbered.
+**English tokenization is unchanged by construction.** Original merges fire first and new ones match
+only Greek bytes. QA confirmed no change in 3,761 English test chunks or 502 random non-Greek strings.
+The *model's* English still changes (§4).
 
-**Consequences, verified by the QA harness.**
-- Every original id and merge is unchanged.
-- Every new token is reachable: 0 self-tokenization failures. By contrast, appending a separately
-  trained Greek BPE leaves 6–17% dead tokens, because SmolLM2 already merges the space with the
-  UTF-8 lead byte.
-- Any text without Greek characters, including all English eval text and code, tokenizes to
-  **identical ids**. So English differences between the arms come from the weights, not the
-  tokenizer.
+**Compression.** Held-out Greek goes from 2.14 to 6.20 bytes per token (2.9×) and from 5.57 to 1.93 tokens
+per word. 99.1% of new tokens occur in held-out text; in training the median new token was seen 538
+times, and 3 never.
 
-**Compression on held-out Greek.** ⟨2.12 → 5.9⟩ bytes/token and ⟨5.7 → 2.0⟩ tokens/word. Over the
-1k…16k vocab-size curve, returns diminish steadily with no sharp knee; 8k is the brief's target.
-
-**Embeddings.** SmolLM2 ties input and output embeddings, so a new row is also a new output
-logit. Each new row is set to the mean of its original sub-token embeddings (FVT). This keeps it
-inside the convex hull of existing rows, so it cannot dominate an English prediction at step 0.
-English BPB at step 0 is ⟨0.872 vs 0.870⟩ (Greek ⟨2.03 vs 1.26⟩). Random rows (0.99) and the HF default (identical
-mean rows; Greek 3.57 BPB) are worse.
-
-**Training.** New rows are a separate tied parameter at 10× the body LR (3e-3, SmolLM2's own
-pretraining peak) with no weight decay. All shared parameters follow Exp1's schedule exactly.
+**Initialisation.** Embeddings are tied. Each new row is the **mean of its original sub-tokens'
+embeddings**, so it lies among the existing rows. At step 0, English moves +0.0002 BPB (0.07% of English
+probability on new tokens), while Greek is 0.75 BPB worse until the new rows train.
 
 ## 3. Evaluation design
-
-- **Metric:** bits per byte on identical text. Per-token perplexity is not comparable across
-  tokenizers.
-- **Chunking:** chunks of ≤1,000 characters, each fitting one 1,024-token window of the
-  *original* tokenizer, so Exp2 cannot win by seeing more text per window.
-- **Greek sets:** Wikipedia (in-domain), the FineWeb-2 official test split (web), Belebele/FLORES
-  (out-of-domain, parallel).
-- **English sets:** FineWeb-Edu (SmolLM2's own distribution), BBC News 2025 (after SmolLM2's
-  release), Belebele (parallel).
-- **Statistics:** paired bootstrap over documents.
-- **Secondary:** Greek and English cloze tasks built from the same items, and byte-budgeted
-  generation probes.
-- **Exp2 diagnostic:** probability mass on new tokens at English positions, plus English BPB
-  renormalised over the original vocabulary. Together these split Exp2's English cost into
-  softmax leakage and true forgetting.
+- **Metric.** BPB on identical text for every model; per-token perplexity is not comparable across
+  tokenizers. Chunks are ≤1,000 characters and fit one window of the *original* tokenizer, so Exp2
+  sees no extra context.
+- **Test sets.** 500 documents each, drawn *before* the training pool. Training documents sharing a
+  paragraph or MinHash near-duplicating any of them were removed (325).
+  - Greek (4.2 MB): Wikipedia, the FineWeb-2 test split, Belebele.
+  - English (2.9 MB): FineWeb-Edu (SmolLM2's own data), BBC News 2025 (after the model), Belebele.
+- **Dev sets.** 150 documents each of Wikipedia-el, FineWeb-2-el and FineWeb-Edu-en; they drive the figures.
+- **Statistics.** Paired document bootstrap, 95% CIs over evaluation noise only.
+- **Diagnostics.** English mass on new tokens and English BPB renormalised over the original vocabulary;
+  cloze tasks (HellaSwag/ARC-Easy in both languages, PIQA) and greedy generation.
 
 ## 4. Results
+*Table 1. Test BPB, macro over 3 sets per language; lower is better.*
 
-⟨paste the main table from results.md⟩
+| model | steps / tokens | Greek read | compute | **Greek** (Δ base) | **English** (Δ base) |
+|---|---|---|---|---|---|
+| original SmolLM2-135M | – | – | – | 1.285 | 0.964 |
+| Exp2 at step 0 | 0 | – | – | 2.034 (+0.749) | 0.965 (+0.000) |
+| **Exp1** fine-tune | 453 / 14.8M | 31.8 MB | 13.6 PFLOPs | **0.874** (−0.412) | **1.117** (+0.152) |
+| **Exp2** +8k tokens | 453 / 14.8M | 90.5 MB | 14.0 PFLOPs | **0.751** (−0.534) | **1.201** (+0.237) |
+| Exp2 at Exp1's Greek bytes (suppl.) | 159 / 5.2M | 31.8 MB | 4.9 PFLOPs | 0.865 (−0.420) | 1.073 (+0.109) |
 
-| model | EL BPB ↓ | ΔEL vs base | EN BPB ↓ | ΔEN vs base | Greek MB seen | PFLOPs |
-|---|---|---|---|---|---|---|
-| base | ⟨⟩ | – | ⟨⟩ | – | 0 | 0 |
-| Exp2 @ step 0 | ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ | 0 | 0 |
-| Exp1 | ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨~42⟩ | ⟨⟩ |
-| Exp2 | ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨~116⟩ | ⟨+3%⟩ |
+*Table 2. Exp2 vs Exp1, paired 95% CIs. Gain = Exp1 − Exp2 on Greek; cost = Exp2 − Exp1 on English.*
 
-Exp2 vs Exp1:
-- extra English cost = ⟨Δ [CI]⟩ BPB
-- extra Greek gain = ⟨Δ [CI]⟩ BPB
-- exchange rate = ⟨⟩ bits of English per bit of Greek
+| Exp2 vs Exp1 | extra Greek gain | extra English cost |
+|---|---|---|
+| matched tokens and steps | **+0.122** [0.121, 0.124] | **+0.084** [0.083, 0.086] |
+| matched Greek bytes (suppl.) | +0.009 [0.007, 0.011] | **−0.044** [−0.045, −0.043] |
 
-## 5. Reading of the trade-off
+Every effect has the same sign on all three sets of its language, including out-of-domain Belebele
+(Greek gains 0.129/0.114/0.125). Details: [`results.md`](../results/t4_run/results/combined/results.md).
 
-⟨Use these questions to read the results:⟩
-- Did Exp2 recover its step-0 Greek deficit within the budget? Compare the learning curves
-  plotted against steps and against Greek bytes seen.
-- How much of Exp2's English change is softmax leakage (`mass_new`; renormalised BPB) versus
-  forgetting shared with Exp1?
-- Is Exp2's Greek advantage, if any, explained by the 2.8× more Greek text it read? See the
-  byte-matched ablation.
-- Efficiency: ⟨2.8×⟩ fewer Greek tokens per document, which means more context and faster
-  generation at inference.
+![learning curves](../results/t4_run/results/combined/learning_curves.png)
+*Figure 1. Dev BPB. Blue Exp1, orange Exp2, green supplementary, dashed original. Greek vs steps, Greek
+MB read and FLOPs; English vs steps.*
 
-## 6. Learnings
+<img src="../results/t4_run/results/combined/tradeoff_trajectories.png" width="440" alt="trade-off trajectories">
 
-- How tokens are added matters more than how many. Continued BPE gives the most compression
-  per added token, no dead rows, and a *provable* English invariance.
-- With tied embeddings, initialisation is an output-calibration problem as much as an input one.
-- "Same tokens" is not "same text": the comparison must be read on bytes as well as steps.
-- ⟨anything the results contradict⟩
+*Figure 2. Greek vs English dev BPB every 50 training steps; lower-left is better.*
+
+**Reading the trade-off.**
+1. **Speed.** Exp2 repays its 0.75 BPB step-0 deficit within 50 steps. Per step it learns Greek faster
+   and forgets English faster. Per Greek byte, both arms learn Greek at nearly the same rate (Fig. 1b);
+   the 0.009 gap at matched bytes is effectively zero.
+2. **Forgetting** depends on both the number of updates and how far each one moves the weights. Matched
+   steps with 2.8× the text raise English loss by 55%; matched text with 2.85× the steps, by 40%.
+   One seed cannot separate the two.
+3. **Trade-off.** Where the two paths overlap, Exp2's is better (Fig. 2). At Exp1's final Greek, Exp2 had
+   ~0.04 BPB less English loss, confirmed on test by the annealed supplementary run (−0.044). At Exp1's
+   final English, Exp2 was ~0.04 better on Greek. Mid-run points are un-annealed, so this understates
+   Exp2. Weight-interpolation frontiers ([plot](../results/t4_run/results/interpolation_frontiers.png))
+   cross at ~0.90 Greek BPB, because their interpolants carry half-trained new rows.
+4. **Rates.** From the base model, Exp1 gives up 0.37 BPB English per BPB Greek and Exp2 gives up 0.44.
+   The marginal rate between them, 0.69, is higher because the curve is convex. Per character (Greek
+   letters are 2 bytes) it is 0.38.
+5. **Why Exp2 costs extra English.**
+   - *Leakage:* the tied new rows train at 10× rate and drift 5× more than old rows. 5–7% of English
+     probability ends on Greek tokens; renormalising recovers 0.022–0.031 BPB, about a third.
+   - *Drift:* the remaining ~0.058 coincides with 13% larger body drift (0.035 vs 0.031), not isolated.
+6. **Secondary evidence.**
+   - *Generation* (16 greedy prompts, 300 bytes): on English prompts both arms drift into Greek (59% of
+     letters for Exp2, 40% Exp1). Exp2 switches script mid-sentence in 8/16 (Exp1 2/16), a sign of
+     leakage. Its Greek repeats less (4-grams 0.11 vs 0.38) but needs ~3× fewer decoding steps.
+   - *Cloze* (500 items) is mostly noise. Greek is near chance; HellaSwag-el goes *against* Exp2 (0.287
+     vs 0.323, Δ −0.036 [−0.070, −0.004]), while gold-answer BPB favours it (1.17 → 0.85 → 0.73).
+     ARC-Easy-en falls with forgetting (0.56 → 0.52 → 0.48).
+
+## 5. Learnings and limitations
+- **How tokens are added matters.** Continued BPE leaves no dead tokens and keeps English tokenization
+  intact; how *many* to add was not tested.
+- **Init is an output-calibration problem** with tied embeddings; the mean init leaves English untouched.
+- **Extension paid off within 1.6M tokens**, not the hundreds of millions in the literature, because
+  SmolLM2 splits 98% of Greek words.
+- **Same tokens ≠ same text.** Plotting against steps, bytes and FLOPs changes the conclusion.
+- **Limitations.** One training seed (`plans/seeds.yaml` not run): the main effects (0.044–0.122) far
+  exceed the 0.001–0.003 seed SDs reported for from-scratch models of this size, the 0.009 does not. One a-priori rate,
+  plus Exp2's 10× group, which may drive leakage. No English replay, per the brief.
+- **Next ablations** (in `configs/ablations/`): new rows at 1× rate, 20% replay, new-rows-only warm-up,
+  2k/4k/16k tokens.
+
+*AI tools.* Claude Code was used for the literature sweep ([`research_report.md`](research_report.md)),
+implementation, and two adversarial reviews that fixed 20+ defects before GPU time. Rationale:
+[`design.md`](design.md); code: `src/vocabx/`, `notebooks/`.

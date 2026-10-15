@@ -1,0 +1,92 @@
+13:51:02 INFO vocabx | data artifact exists: /content/vocabx_store/artifacts/data/1f6728b731df
+13:51:02 INFO vocabx | attention: disabled (repeat_kv; pre-Ampere GPU)
+13:51:03 INFO vocabx | expanded vocab 49152 -> 57152 with fvt_mean (new-row norm 2.57 vs old 3.18)
+13:51:04 INFO vocabx | run exp2_extend: 453 steps x 32768 tokens = 14.8M tokens; device=cuda amp=torch.float16; vocab 57152 (+8000)
+13:51:04 INFO vocabx | el stream: 14496 blocks needed, 24047 per epoch -> 0.60 epochs
+13:51:12 INFO vocabx | dev eval @0 (8s): wikipedia_el:dev=2.0530  fineweb2_el:dev=2.0695  fineweb_edu_en:dev=0.9140
+13:52:15 INFO vocabx | [step0] wikipedia_el           BPB 2.0993  tok/word 2.05  mass_new 0.8891
+13:52:15 INFO vocabx | [step0] fineweb2_el            BPB 2.0533  tok/word 1.85  mass_new 0.9380
+13:52:15 INFO vocabx | [step0] belebele_el            BPB 1.9485  tok/word 1.74  mass_new 0.9567
+13:52:15 INFO vocabx | [step0] fineweb_edu_en         BPB 0.9181  tok/word 1.32  mass_new 0.0007
+13:52:15 INFO vocabx | [step0] bbc_news_2025_en       BPB 1.0488  tok/word 1.31  mass_new 0.0006
+13:52:15 INFO vocabx | [step0] belebele_en            BPB 0.9268  tok/word 1.27  mass_new 0.0008
+13:52:25 INFO vocabx | [step0] hellaswag_el   acc_norm 0.266 (chance 0.25)  gold_bpb 2.040
+13:52:31 INFO vocabx | [step0] hellaswag_en   acc_norm 0.410 (chance 0.25)  gold_bpb 0.899
+13:52:36 INFO vocabx | [step0] arc_easy_el    acc_norm 0.220 (chance 0.25)  gold_bpb 2.237
+13:52:39 INFO vocabx | [step0] arc_easy_en    acc_norm 0.558 (chance 0.25)  gold_bpb 1.157
+13:52:42 INFO vocabx | [step0] piqa_en        acc_norm 0.674 (chance 0.50)  gold_bpb 1.182
+13:55:38 INFO vocabx | step    1/453 [all] loss/tok 8.5577 train_bpb 2.0824 lr 8.82e-06 (new rows 8.82e-05) gn 10.33 scale 1024 8383 tok/s
+13:56:13 INFO vocabx | step   10/453 [all] loss/tok 6.8735 train_bpb 1.5574 lr 8.82e-05 (new rows 8.82e-04) gn 5.67 scale 1024 8582 tok/s
+13:56:51 INFO vocabx | step   20/453 [all] loss/tok 6.1597 train_bpb 1.4194 lr 1.76e-04 (new rows 1.76e-03) gn 2.55 scale 1024 8566 tok/s
+13:57:29 INFO vocabx | step   30/453 [all] loss/tok 5.3777 train_bpb 1.2587 lr 2.65e-04 (new rows 2.65e-03) gn 1.37 scale 1024 8496 tok/s
+13:58:08 INFO vocabx | step   40/453 [all] loss/tok 4.7635 train_bpb 1.0760 lr 3.00e-04 (new rows 3.00e-03) gn 1.34 scale 1024 8547 tok/s
+13:58:46 INFO vocabx | step   50/453 [all] loss/tok 4.9102 train_bpb 1.1192 lr 3.00e-04 (new rows 3.00e-03) gn 1.34 scale 1024 8515 tok/s
+13:58:54 INFO vocabx | dev eval @50 (7s): wikipedia_el:dev=1.0708  fineweb2_el:dev=1.1365  fineweb_edu_en:dev=0.9452
+13:59:32 INFO vocabx | step   60/453 [all] loss/tok 4.4702 train_bpb 1.0243 lr 3.00e-04 (new rows 3.00e-03) gn 1.00 scale 1024 8539 tok/s
+14:00:11 INFO vocabx | step   70/453 [all] loss/tok 4.2892 train_bpb 1.0407 lr 3.00e-04 (new rows 3.00e-03) gn 0.87 scale 1024 8555 tok/s
+14:00:50 INFO vocabx | checkpoint saved at step 76
+14:01:06 INFO vocabx | step   80/453 [all] loss/tok 4.0798 train_bpb 1.0029 lr 3.00e-04 (new rows 3.00e-03) gn 1.07 scale 1024 8521 tok/s
+14:01:45 INFO vocabx | step   90/453 [all] loss/tok 4.1101 train_bpb 0.9647 lr 3.00e-04 (new rows 3.00e-03) gn 1.17 scale 1024 8552 tok/s
+14:02:23 INFO vocabx | step  100/453 [all] loss/tok 4.1235 train_bpb 0.9563 lr 3.00e-04 (new rows 3.00e-03) gn 1.11 scale 1024 8568 tok/s
+14:02:30 INFO vocabx | dev eval @100 (7s): wikipedia_el:dev=0.9118  fineweb2_el:dev=0.9918  fineweb_edu_en:dev=0.9761
+14:03:09 INFO vocabx | step  110/453 [all] loss/tok 3.9336 train_bpb 0.9513 lr 3.00e-04 (new rows 3.00e-03) gn 0.88 scale 1024 8520 tok/s
+14:03:47 INFO vocabx | step  120/453 [all] loss/tok 3.7483 train_bpb 0.9046 lr 3.00e-04 (new rows 3.00e-03) gn 1.00 scale 1024 8539 tok/s
+14:04:26 INFO vocabx | step  130/453 [all] loss/tok 3.7928 train_bpb 0.8954 lr 3.00e-04 (new rows 3.00e-03) gn 0.93 scale 1024 8533 tok/s
+14:05:04 INFO vocabx | step  140/453 [all] loss/tok 3.8067 train_bpb 0.8870 lr 3.00e-04 (new rows 3.00e-03) gn 0.76 scale 1024 8563 tok/s
+14:05:43 INFO vocabx | step  150/453 [all] loss/tok 3.9893 train_bpb 0.9668 lr 3.00e-04 (new rows 3.00e-03) gn 1.07 scale 1024 8511 tok/s
+14:05:50 INFO vocabx | dev eval @150 (7s): wikipedia_el:dev=0.8522  fineweb2_el:dev=0.9374  fineweb_edu_en:dev=1.0043
+14:06:02 INFO vocabx | checkpoint saved at step 151
+14:06:37 INFO vocabx | step  160/453 [all] loss/tok 3.7713 train_bpb 0.9292 lr 3.00e-04 (new rows 3.00e-03) gn 1.45 scale 1024 8401 tok/s
+14:07:15 INFO vocabx | step  170/453 [all] loss/tok 3.6661 train_bpb 0.8559 lr 3.00e-04 (new rows 3.00e-03) gn 0.77 scale 1024 8588 tok/s
+14:07:53 INFO vocabx | step  180/453 [all] loss/tok 3.4332 train_bpb 0.8351 lr 3.00e-04 (new rows 3.00e-03) gn 0.85 scale 1024 8522 tok/s
+14:08:32 INFO vocabx | step  190/453 [all] loss/tok 3.5412 train_bpb 0.7647 lr 3.00e-04 (new rows 3.00e-03) gn 0.97 scale 1024 8584 tok/s
+14:09:10 INFO vocabx | step  200/453 [all] loss/tok 4.1543 train_bpb 1.1371 lr 3.00e-04 (new rows 3.00e-03) gn 1.65 scale 1024 8544 tok/s
+14:09:18 INFO vocabx | dev eval @200 (7s): wikipedia_el:dev=0.8114  fineweb2_el:dev=0.9000  fineweb_edu_en:dev=1.0318
+14:09:56 INFO vocabx | step  210/453 [all] loss/tok 3.5940 train_bpb 0.8371 lr 3.00e-04 (new rows 3.00e-03) gn 0.80 scale 1024 8532 tok/s
+14:10:34 INFO vocabx | step  220/453 [all] loss/tok 3.5401 train_bpb 0.8450 lr 3.00e-04 (new rows 3.00e-03) gn 0.75 scale 1024 8541 tok/s
+14:11:58 INFO vocabx | checkpoint saved at step 228
+14:12:06 INFO vocabx | step  230/453 [all] loss/tok 3.2000 train_bpb 0.7701 lr 3.00e-04 (new rows 3.00e-03) gn 0.78 scale 1024 8704 tok/s
+14:12:44 INFO vocabx | step  240/453 [all] loss/tok 3.5958 train_bpb 0.8584 lr 3.00e-04 (new rows 3.00e-03) gn 0.64 scale 1024 8407 tok/s
+14:13:23 INFO vocabx | step  250/453 [all] loss/tok 3.3331 train_bpb 0.7673 lr 3.00e-04 (new rows 3.00e-03) gn 0.88 scale 1024 8602 tok/s
+14:13:30 INFO vocabx | dev eval @250 (7s): wikipedia_el:dev=0.7859  fineweb2_el:dev=0.8811  fineweb_edu_en:dev=1.0631
+14:14:08 INFO vocabx | step  260/453 [all] loss/tok 3.2485 train_bpb 0.8019 lr 3.00e-04 (new rows 3.00e-03) gn 2.30 scale 1024 8504 tok/s
+14:14:47 INFO vocabx | step  270/453 [all] loss/tok 3.6177 train_bpb 0.8132 lr 3.00e-04 (new rows 3.00e-03) gn 0.89 scale 1024 8566 tok/s
+14:15:25 INFO vocabx | step  280/453 [all] loss/tok 3.3837 train_bpb 0.7544 lr 3.00e-04 (new rows 3.00e-03) gn 0.85 scale 1024 8535 tok/s
+14:16:04 INFO vocabx | step  290/453 [all] loss/tok 3.4779 train_bpb 0.8216 lr 3.00e-04 (new rows 3.00e-03) gn 0.85 scale 1024 8553 tok/s
+14:16:42 INFO vocabx | step  300/453 [all] loss/tok 3.3056 train_bpb 0.7676 lr 3.00e-04 (new rows 3.00e-03) gn 0.68 scale 1024 8573 tok/s
+14:16:49 INFO vocabx | dev eval @300 (7s): wikipedia_el:dev=0.7668  fineweb2_el:dev=0.8541  fineweb_edu_en:dev=1.0855
+14:18:04 INFO vocabx | checkpoint saved at step 303
+14:18:31 INFO vocabx | step  310/453 [all] loss/tok 3.2385 train_bpb 0.7569 lr 3.00e-04 (new rows 3.00e-03) gn 0.83 scale 1024 8483 tok/s
+14:19:09 INFO vocabx | step  320/453 [all] loss/tok 3.1590 train_bpb 0.7613 lr 3.00e-04 (new rows 3.00e-03) gn 0.98 scale 1024 8578 tok/s
+14:19:48 INFO vocabx | step  330/453 [all] loss/tok 3.5515 train_bpb 0.8441 lr 3.00e-04 (new rows 3.00e-03) gn 0.87 scale 1024 8562 tok/s
+14:20:26 INFO vocabx | step  340/453 [all] loss/tok 3.1200 train_bpb 0.7404 lr 3.00e-04 (new rows 3.00e-03) gn 0.93 scale 1024 8551 tok/s
+14:21:04 INFO vocabx | step  350/453 [all] loss/tok 3.6729 train_bpb 0.8639 lr 3.00e-04 (new rows 3.00e-03) gn 0.74 scale 1024 8583 tok/s
+14:21:12 INFO vocabx | dev eval @350 (7s): wikipedia_el:dev=0.7582  fineweb2_el:dev=0.8428  fineweb_edu_en:dev=1.1055
+14:21:50 INFO vocabx | step  360/453 [all] loss/tok 3.3258 train_bpb 0.7644 lr 3.00e-04 (new rows 3.00e-03) gn 0.66 scale 1024 8544 tok/s
+14:22:28 INFO vocabx | step  370/453 [all] loss/tok 2.8497 train_bpb 0.7043 lr 2.77e-04 (new rows 2.77e-03) gn 0.71 scale 1024 8547 tok/s
+14:23:07 INFO vocabx | step  380/453 [all] loss/tok 3.6224 train_bpb 0.8194 lr 2.44e-04 (new rows 2.44e-03) gn 0.84 scale 1024 8562 tok/s
+14:23:43 INFO vocabx | checkpoint saved at step 380
+14:24:21 INFO vocabx | step  390/453 [all] loss/tok 3.4375 train_bpb 0.7903 lr 2.11e-04 (new rows 2.11e-03) gn 0.70 scale 1024 8378 tok/s
+14:25:00 INFO vocabx | step  400/453 [all] loss/tok 3.2239 train_bpb 0.8281 lr 1.78e-04 (new rows 1.78e-03) gn 0.69 scale 1024 8615 tok/s
+14:25:07 INFO vocabx | dev eval @400 (7s): wikipedia_el:dev=0.7317  fineweb2_el:dev=0.8172  fineweb_edu_en:dev=1.1359
+14:25:45 INFO vocabx | step  410/453 [all] loss/tok 3.2992 train_bpb 0.7391 lr 1.45e-04 (new rows 1.45e-03) gn 0.75 scale 1024 8524 tok/s
+14:26:24 INFO vocabx | step  420/453 [all] loss/tok 3.1522 train_bpb 0.7356 lr 1.12e-04 (new rows 1.12e-03) gn 0.63 scale 1024 8573 tok/s
+14:27:02 INFO vocabx | step  430/453 [all] loss/tok 3.2583 train_bpb 0.7952 lr 7.91e-05 (new rows 7.91e-04) gn 0.69 scale 1024 8559 tok/s
+14:27:40 INFO vocabx | step  440/453 [all] loss/tok 3.3303 train_bpb 0.8560 lr 4.62e-05 (new rows 4.62e-04) gn 0.86 scale 1024 8560 tok/s
+14:28:19 INFO vocabx | step  450/453 [all] loss/tok 3.0554 train_bpb 0.6948 lr 1.32e-05 (new rows 1.32e-04) gn 0.58 scale 1024 8556 tok/s
+14:28:26 INFO vocabx | dev eval @450 (7s): wikipedia_el:dev=0.7097  fineweb2_el:dev=0.7971  fineweb_edu_en:dev=1.1283
+14:28:38 INFO vocabx | step  453/453 [all] loss/tok 3.1885 train_bpb 0.7515 lr 3.30e-06 (new rows 3.30e-05) gn 3.81 scale 1024 8573 tok/s
+14:28:45 INFO vocabx | dev eval @453 (7s): wikipedia_el:dev=0.7095  fineweb2_el:dev=0.7969  fineweb_edu_en:dev=1.1281
+14:30:35 INFO vocabx | [final] wikipedia_el           BPB 0.7328  tok/word 2.05  mass_new 0.7042
+14:30:35 INFO vocabx | [final] fineweb2_el            BPB 0.7945  tok/word 1.85  mass_new 0.7829
+14:30:35 INFO vocabx | [final] belebele_el            BPB 0.7262  tok/word 1.74  mass_new 0.8155
+14:30:35 INFO vocabx | [final] fineweb_edu_en         BPB 1.1308  tok/word 1.32  mass_new 0.0537
+14:30:35 INFO vocabx | [final] bbc_news_2025_en       BPB 1.2945  tok/word 1.31  mass_new 0.0649
+14:30:35 INFO vocabx | [final] belebele_en            BPB 1.1783  tok/word 1.27  mass_new 0.0742
+14:30:45 INFO vocabx | [final] hellaswag_el   acc_norm 0.288 (chance 0.25)  gold_bpb 0.732
+14:30:51 INFO vocabx | [final] hellaswag_en   acc_norm 0.382 (chance 0.25)  gold_bpb 1.100
+14:30:56 INFO vocabx | [final] arc_easy_el    acc_norm 0.268 (chance 0.25)  gold_bpb 1.210
+14:30:59 INFO vocabx | [final] arc_easy_en    acc_norm 0.484 (chance 0.25)  gold_bpb 1.483
+14:31:02 INFO vocabx | [final] piqa_en        acc_norm 0.638 (chance 0.50)  gold_bpb 1.437
+14:32:28 INFO vocabx | run exp2_extend done: 29.0 min of training
+14:32:33 INFO vocabx | report written to /content/vocabx_store/artifacts/results/main
