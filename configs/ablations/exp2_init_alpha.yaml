@@ -1,0 +1,6 @@
+# Ablation: shrink FVT toward the mean embedding (hull-preserving logit temperature).
+inherits: ../exp2_extend.yaml
+run_name: exp2_init_alpha075
+init:
+  method: alpha_shrink
+  params: {alpha: 0.75, base: fvt_mean}

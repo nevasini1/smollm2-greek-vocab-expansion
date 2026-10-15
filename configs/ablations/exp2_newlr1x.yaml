@@ -1,0 +1,5 @@
+# Ablation: new rows at the same LR as the body (no 10x multiplier).
+inherits: ../exp2_extend.yaml
+run_name: exp2_newlr1x
+train:
+  group_lr_mult: {emb_new: 1.0}

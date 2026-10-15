@@ -1,0 +1,5 @@
+# Negative control: N(0, initializer_range) rows (outside the convex hull of old rows).
+inherits: ../exp2_extend.yaml
+run_name: exp2_init_random
+init:
+  method: random_normal

@@ -1,0 +1,5 @@
+# Ablation: train a separate Greek BPE and append its novel merges (common recipe).
+inherits: ../exp2_extend.yaml
+run_name: exp2_naive_merge
+tokenizer:
+  extender: naive_merge

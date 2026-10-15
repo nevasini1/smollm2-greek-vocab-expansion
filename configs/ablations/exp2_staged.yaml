@@ -1,0 +1,8 @@
+# Ablation: embedding-only warm-up (Meltemi/Krikri/Liquid recipe) INSIDE the same budget:
+# first 10% of steps train only the 8k new rows (body + old rows frozen), then everything.
+inherits: ../exp2_extend.yaml
+run_name: exp2_staged
+train:
+  stages:
+    - {name: new_rows_only, until_frac: 0.1, trainable: [emb_new]}
+    - {name: full, until_frac: 1.0, trainable: [body, norms, emb_old, emb_new]}

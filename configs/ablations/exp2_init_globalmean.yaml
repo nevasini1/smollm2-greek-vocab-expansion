@@ -1,0 +1,5 @@
+# Control: every new row = mean embedding (what HF resize_token_embeddings does by default).
+inherits: ../exp2_extend.yaml
+run_name: exp2_init_globalmean
+init:
+  method: global_mean

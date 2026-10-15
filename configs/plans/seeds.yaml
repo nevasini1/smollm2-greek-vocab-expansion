@@ -1,0 +1,12 @@
+# Training-noise estimate: two more data-order seeds for both arms (CRN pairs: same seed per pair).
+runs:
+  - {config: ../exp1_finetune.yaml, set: ["seed=1", "run_name=exp1_finetune_s1"]}
+  - {config: ../exp2_extend.yaml,   set: ["seed=1", "run_name=exp2_extend_s1"]}
+  - {config: ../exp1_finetune.yaml, set: ["seed=2", "run_name=exp1_finetune_s2"]}
+  - {config: ../exp2_extend.yaml,   set: ["seed=2", "run_name=exp2_extend_s2"]}
+report:
+  name: seeds
+  baseline: base
+  reference: exp1_finetune
+  pairs: [[exp2_extend, exp1_finetune], [exp2_extend_s1, exp1_finetune_s1], [exp2_extend_s2, exp1_finetune_s2]]
+  runs: [base, exp1_finetune, exp2_extend, exp1_finetune_s1, exp2_extend_s1, exp1_finetune_s2, exp2_extend_s2]

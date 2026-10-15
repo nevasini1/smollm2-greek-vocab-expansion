@@ -1,0 +1,14 @@
+# Experiment 2: +8,000 Greek tokens by continued BPE, FVT-mean init, same budget as Exp1.
+# Only differences from exp1_finetune.yaml: the tokenizer, the init of the new rows, and
+# the new rows' own LR group (train.group_lr_mult.emb_new in base.yaml).
+inherits: base.yaml
+run_name: exp2_extend
+tokenizer:
+  extender: continued_bpe
+  num_new_tokens: 8000        # 49,152 + 8,000 = 57,152 = 893 x 64 (tensor-core aligned)
+  train_mb: 60                # learned on the Greek TRAINING pool only (mixed wiki + web)
+  min_frequency: 2
+  params:
+    script_filter: strict     # every new token is pure Greek (+ optional leading space)
+init:
+  method: fvt_mean

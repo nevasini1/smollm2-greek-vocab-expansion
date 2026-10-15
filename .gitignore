@@ -1,0 +1,7 @@
+artifacts*/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+*.pt
+.DS_Store

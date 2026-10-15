@@ -1,0 +1,25 @@
+# Ranked by insight per GPU-hour. Each run = one more 30-min training run (+eval).
+# Run a prefix with:  python -m vocabx plan configs/plans/ablations.yaml --only exp1_replay20 exp2_replay20
+runs:
+  - config: ../ablations/exp2_bytes_matched.yaml   # ~11 min: tokenizer effect at equal Greek text
+  - config: ../ablations/exp1_replay20.yaml        # replay pair: does Exp2's extra English cost survive best practice?
+  - config: ../ablations/exp2_replay20.yaml
+  - config: ../ablations/exp2_staged.yaml          # embedding-only warm-up inside the budget
+  - config: ../ablations/exp2_init_alpha.yaml      # init: logit temperature on new rows
+  - config: ../ablations/exp2_k2000.yaml           # fewer, better-trained new tokens
+  - config: ../ablations/exp2_newlr1x.yaml
+  - config: ../ablations/exp2_init_merge.yaml
+  - config: ../ablations/exp2_naive_merge.yaml
+  - config: ../ablations/exp2_k4000.yaml
+  - config: ../ablations/exp2_init_random.yaml     # negative control
+  - config: ../ablations/exp2_init_globalmean.yaml # control
+  - config: ../ablations/exp2_k16000.yaml
+report:
+  name: ablations
+  title: "Ablations (reference: Exp1)"
+  baseline: base
+  reference: exp1_finetune
+  pairs: [[exp2_replay20, exp1_replay20], [exp2_bytes_matched, exp1_finetune], [exp2_staged, exp2_extend]]
+  runs: [base, exp1_finetune, exp2_extend, exp2_bytes_matched, exp1_replay20, exp2_replay20, exp2_staged,
+         exp2_init_alpha075, exp2_k2000, exp2_newlr1x, exp2_init_merge, exp2_naive_merge, exp2_k4000,
+         exp2_init_random, exp2_init_globalmean, exp2_k16000]

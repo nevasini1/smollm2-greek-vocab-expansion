@@ -1,0 +1,5 @@
+# Replay pair: 20% of sequences from English FineWeb-Edu, identical in both arms.
+inherits: ../exp1_finetune.yaml
+run_name: exp1_replay20
+train:
+  english_ratio: 0.2

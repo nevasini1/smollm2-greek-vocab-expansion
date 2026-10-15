@@ -1,0 +1,5 @@
+# Experiment 1: continue training with the ORIGINAL tokenizer.
+inherits: base.yaml
+run_name: exp1_finetune
+tokenizer:
+  extender: none

@@ -1,0 +1,12 @@
+# The headline comparison: baseline, Exp1, Exp2 (same seed, tokens, steps).
+runs:
+  - config: ../base_model.yaml
+    set: ["train.max_steps=0"]   # stays eval-only even if a global max_steps override is passed
+  - config: ../exp1_finetune.yaml
+  - config: ../exp2_extend.yaml
+report:
+  name: main
+  title: "SmolLM2-135M -> Greek: fine-tune (Exp1) vs. vocabulary extension (Exp2)"
+  baseline: base
+  reference: exp1_finetune
+  runs: [base, exp1_finetune, exp2_extend]

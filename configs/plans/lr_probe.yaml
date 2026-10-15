@@ -1,0 +1,11 @@
+# Short LR probe on DEV data for BOTH arms (never tune on Exp1 alone, never on test).
+# Decision rule (fixed in advance): pick the largest LR whose English-dev BPB increase is
+# at most 1/3 of its Greek-dev BPB decrease, averaged over the two arms; ties -> lower LR.
+global_set: ["train.max_steps=150", "eval.sets=[]", "eval.full_eval_at_step0=false", "train.eval_every=50"]
+runs:
+  - {config: ../exp1_finetune.yaml, set: ["run_name=probe_exp1_lr1e-4", "train.optim.lr=1.0e-4"]}
+  - {config: ../exp2_extend.yaml,   set: ["run_name=probe_exp2_lr1e-4", "train.optim.lr=1.0e-4"]}
+  - {config: ../exp1_finetune.yaml, set: ["run_name=probe_exp1_lr3e-4", "train.optim.lr=3.0e-4"]}
+  - {config: ../exp2_extend.yaml,   set: ["run_name=probe_exp2_lr3e-4", "train.optim.lr=3.0e-4"]}
+  - {config: ../exp1_finetune.yaml, set: ["run_name=probe_exp1_lr1e-3", "train.optim.lr=1.0e-3"]}
+  - {config: ../exp2_extend.yaml,   set: ["run_name=probe_exp2_lr1e-3", "train.optim.lr=1.0e-3"]}

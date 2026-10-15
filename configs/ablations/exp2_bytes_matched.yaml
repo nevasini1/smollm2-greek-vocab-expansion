@@ -1,0 +1,7 @@
+# Ablation: stop Exp2 once it has read as many Greek BYTES as Exp1 (fewer steps, own schedule).
+# Separates "better tokenizer" from "saw ~2.8x more Greek text".
+inherits: ../exp2_extend.yaml
+run_name: exp2_bytes_matched
+train:
+  budget_mode: greek_bytes
+  budget_reference: exp1_finetune

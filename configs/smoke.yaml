@@ -1,0 +1,33 @@
+# Tiny end-to-end config for laptops/CI: exercises every code path in a few minutes.
+# Usage: python -m vocabx plan configs/plans/smoke.yaml
+inherits: base.yaml
+workdir: artifacts_smoke
+data:
+  greek:
+    - {source: wikipedia_el, train_mb: 3, dev_docs: 8, test_docs: 16}
+    - {source: fineweb2_el,  train_mb: 3, dev_docs: 8, test_docs: 16}
+    - {source: belebele_el,  test_docs: 16}
+  english:
+    - {source: fineweb_edu_en,   train_mb: 1, dev_docs: 8, test_docs: 16}
+    - {source: bbc_news_2025_en, test_docs: 16, params: {months: ["2025-06"]}}
+    - {source: belebele_en,      test_docs: 16}
+  shuffle_buffer: 200
+  minhash: true
+tokenizer:
+  train_mb: 2
+  num_new_tokens: 500
+train:
+  seq_len: 256
+  micro_batch_size: 2
+  grad_accum: 2
+  max_steps: 6
+  eval_every: 3
+  log_every: 1
+eval:
+  max_chars: 250
+  max_chunks_per_doc: 2
+  dev_max_chunks: 16
+  batch_tokens: 4096
+  downstream_n: 12
+  generation_prompts: 2
+  generation_bytes: 60

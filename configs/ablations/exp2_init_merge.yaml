@@ -1,0 +1,5 @@
+# Ablation: recursive mean of the two BPE merge parents.
+inherits: ../exp2_extend.yaml
+run_name: exp2_init_merge
+init:
+  method: merge_parent_mean

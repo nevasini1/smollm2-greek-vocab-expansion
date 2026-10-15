@@ -1,0 +1,5 @@
+# Ablation: vocabulary size (4000 new tokens), same budget.
+inherits: ../exp2_extend.yaml
+run_name: exp2_k4000
+tokenizer:
+  num_new_tokens: 4000

@@ -1,0 +1,66 @@
+# Shared settings for every arm. Experiments inherit this file and change ONLY what
+# they are testing, so any difference between runs is visible in a 3-line diff.
+workdir: artifacts          # put this on Google Drive in Colab (see notebook)
+seed: 0                     # document order; arms sharing a seed see identical data order
+
+model:
+  name: HuggingFaceTB/SmolLM2-135M
+  attn_implementation: sdpa
+
+data:
+  # Greek pool: 150 MB of training text. At a matched token budget Exp2 reads ~2.8x more
+  # Greek bytes than Exp1 (5.9 vs 2.1 bytes/token), so 600 x 32k = 19.7M tokens needs
+  # ~116 MB for Exp2. Sizing the pool above that keeps BOTH arms at <= 1 epoch.
+  greek:
+    - {source: wikipedia_el, train_mb: 75, dev_docs: 150, test_docs: 500}
+    - {source: fineweb2_el,  train_mb: 75, dev_docs: 150, test_docs: 500}   # test = official FineWeb-2 test split
+    - {source: belebele_el,  test_docs: 488}                                 # parallel with belebele_en
+  english:
+    - {source: fineweb_edu_en,   train_mb: 30, dev_docs: 150, test_docs: 500}  # SmolLM2's own distribution; replay pool
+    - {source: bbc_news_2025_en, test_docs: 500}                               # published after SmolLM2's release
+    - {source: belebele_en,      test_docs: 488}
+  min_chars: 200
+  min_script_ratio: 0.6
+  minhash: true
+  minhash_threshold: 0.7
+
+tokenizer:
+  extender: none
+
+init:
+  method: fvt_mean
+
+train:
+  seq_len: 1024
+  micro_batch_size: 4
+  grad_accum: 8               # 32,768 tokens per optimizer step
+  max_steps: 600              # 19.7M tokens; re-derive with `vocabx calibrate` on your GPU (use the Exp2 config)
+  english_ratio: 0.0          # literal spec: continue training on Greek only (replay is an ablation)
+  optim:
+    lr: 3.0e-4                # ~1/10 of SmolLM2's pretraining peak (3e-3), shared by both arms
+    betas: [0.9, 0.95]
+    eps: 1.0e-8
+    weight_decay: 0.01        # 2-D body matrices only; 0 on norms and embeddings (both arms)
+    grad_clip: 1.0
+  schedule: {name: wsd, warmup_frac: 0.075, decay_frac: 0.2}   # 45 warmup steps at 600 (>= ~40 recommended)
+  group_lr_mult: {emb_new: 10.0}   # only exists in Exp2: new rows at 3e-3 = SmolLM2's pretraining peak
+  precision: auto             # fp16 autocast + GradScaler on a T4, bf16 on Ampere+, fp32 on CPU/MPS
+  loss_chunk_tokens: 0
+  eval_every: 50
+  log_every: 10
+  checkpoint_every_min: 5
+  wallclock_limit_min: 30
+
+eval:
+  sets: [wikipedia_el, fineweb2_el, belebele_el, fineweb_edu_en, bbc_news_2025_en, belebele_en]
+  dev_sets: ["wikipedia_el:dev", "fineweb2_el:dev", "fineweb_edu_en:dev"]
+  max_chars: 1000             # every chunk fits in ONE 1024-token window of the ORIGINAL tokenizer
+  max_chunks_per_doc: 4
+  dev_max_chunks: 200
+  batch_tokens: 16384
+  downstream: [hellaswag_el, hellaswag_en, arc_easy_el, arc_easy_en, piqa_en]
+  downstream_n: 500
+  generation: true
+  generation_prompts: 16
+  generation_bytes: 300
+  full_eval_at_step0: true

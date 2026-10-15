@@ -1,0 +1,5 @@
+# Off-the-shelf SmolLM2-135M: the shared baseline row (evaluation only, no training).
+inherits: base.yaml
+run_name: base
+train:
+  max_steps: 0

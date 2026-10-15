@@ -1,0 +1,4 @@
+inherits: ../exp2_extend.yaml
+run_name: exp2_replay20
+train:
+  english_ratio: 0.2
