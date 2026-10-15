@@ -142,3 +142,21 @@ def test_bootstrap_paired_point_and_ci():
     assert boot["a"]["s"][0] == pytest.approx(pa)
     p, lo, hi = ci(macro(boot["b"], ["s"]) - macro(boot["a"], ["s"]))
     assert lo <= p <= hi and hi < 0  # b is ~10% better and the paired CI excludes 0
+
+
+def test_diamond_keeps_first_parents_overrides_of_base_keys_and_dump_roundtrip(tmp_path):
+    from vocabx.config import dump_config
+
+    root = os.path.join(ROOT, "configs")
+    (tmp_path / "combo.yaml").write_text(
+        f"inherits: [{root}/ablations/exp2_k2000.yaml, {root}/ablations/exp2_replay20.yaml]\n"
+        "run_name: combo\nmodel: {revision: '1234e56'}\n"
+    )
+    cfg = load_config(str(tmp_path / "combo.yaml"))
+    assert cfg.tokenizer.num_new_tokens == 2000  # first parent's override of a base key survives
+    assert cfg.train.english_ratio == pytest.approx(0.2)  # second parent's override applies too
+    assert cfg.model.revision == "1234e56"  # quoted strings stay strings
+    out = tmp_path / "dumped.yaml"
+    dump_config(cfg, str(out))
+    again = load_config(str(out))
+    assert again.model.revision == "1234e56" and again.to_dict() == cfg.to_dict()

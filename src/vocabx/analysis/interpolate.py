@@ -17,21 +17,24 @@ import torch
 
 from ..evaluation.intrinsic import load_eval_chunks, score_chunks, summarize_records
 from ..modeling.surgery import build_model, load_base_model, merge_split_embedding
-from ..tokenization.extenders import build_tokenizer
+from ..tokenization.extenders import TokenizerBundle
 from ..utils import LOG, pick_device, resolve_precision, write_json, write_jsonl
 
 
 def interpolate_run(cfg, alphas: Sequence[float] = (0.0, 0.25, 0.5, 0.75, 1.0), sets: List[str] | None = None) -> Dict[str, Any]:
     device = pick_device()
     amp, _ = resolve_precision(cfg.train.precision, device)
-    bundle = build_tokenizer(cfg)
     final_dir = os.path.join(cfg.run_dir, "final")
     if not os.path.exists(final_dir):
         raise FileNotFoundError(f"{final_dir} missing; train the run first")
+    # the tokenizer the run actually trained with (saved next to the model), not one rebuilt from config
+    bundle = TokenizerBundle.from_model_dir(final_dir, cfg.model.name, cfg.model.revision)
     start, _ = build_model(cfg, bundle, "cpu")
     merge_split_embedding(start)
     end = load_base_model(final_dir, attn_implementation=cfg.model.attn_implementation)
-    s0, s1 = start.state_dict(), end.state_dict()
+    # clone: on CPU .to(device) is a no-op, so state_dict tensors would alias the live params
+    s0 = {k: v.detach().clone() for k, v in start.state_dict().items()}
+    s1 = {k: v.detach().clone() for k, v in end.state_dict().items()}
     if set(s0) != set(s1):
         raise ValueError("start/final parameter names differ")
     sets = sets or cfg.eval.sets

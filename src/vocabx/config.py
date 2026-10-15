@@ -205,32 +205,33 @@ def _deep_merge(base: Dict[str, Any], over: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
+_FLOAT_RE = re.compile(
+    r"""^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+]?[0-9]+)?
+    |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
+    |\.[0-9_]+(?:[eE][-+]?[0-9]+)?
+    |[-+]?\.(?:inf|Inf|INF)
+    |\.(?:nan|NaN|NAN))$""",
+    re.X,
+)
+
+
 class _Loader(yaml.SafeLoader):
     """SafeLoader that also reads 1e-3 / 3e0 (no decimal point) as floats."""
 
 
-_Loader.add_implicit_resolver(
-    "tag:yaml.org,2002:float",
-    re.compile(
-        r"""^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+]?[0-9]+)?
-        |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
-        |\.[0-9_]+(?:[eE][-+]?[0-9]+)?
-        |[-+]?\.(?:inf|Inf|INF)
-        |\.(?:nan|NaN|NAN))$""",
-        re.X,
-    ),
-    list("-+0123456789."),
-)
+class _Dumper(yaml.SafeDumper):
+    """Dumper that knows the same float pattern, so strings like '1234e56' are written quoted."""
+
+
+for _cls in (_Loader, _Dumper):
+    _cls.add_implicit_resolver("tag:yaml.org,2002:float", _FLOAT_RE, list("-+0123456789."))
 
 
 def yaml_load(text_or_stream):
     return yaml.load(text_or_stream, Loader=_Loader)
 
 
-def _load_yaml_with_inheritance(path: str, _stack: tuple = ()) -> Dict[str, Any]:
-    path = os.path.abspath(path)
-    if path in _stack:  # only the current chain counts, so diamonds (A->B->D, A->C->D) are fine
-        raise ValueError(f"Config inheritance cycle at {path}")
+def _read_yaml(path: str) -> Dict[str, Any]:
     with open(path) as f:
         raw = yaml_load(f) or {}
     here = os.path.dirname(path)
@@ -239,18 +240,42 @@ def _load_yaml_with_inheritance(path: str, _stack: tuple = ()) -> Dict[str, Any]
             os.path.normpath(os.path.join(here, p)) if (p.endswith(".py") and not os.path.isabs(p)) else p
             for p in raw["plugins"] or []
         ]
-    parents = raw.pop("inherits", None)
-    if parents is None:
-        return raw
+    return raw
+
+
+def _linearize(path: str, stack: tuple, order: List[tuple], seen: set) -> None:
+    """Post-order DFS over `inherits`: every file appears once, after all of its ancestors."""
+    path = os.path.abspath(path)
+    if path in stack:
+        raise ValueError(f"Config inheritance cycle at {path}")
+    raw = _read_yaml(path)
+    parents = raw.pop("inherits", None) or []
     if isinstance(parents, str):
         parents = [parents]
-    merged: Dict[str, Any] = {}
     for p in parents:
-        ppath = p if os.path.isabs(p) else os.path.join(here, p)
-        merged = _deep_merge(merged, _load_yaml_with_inheritance(ppath, _stack + (path,)))
-    if "plugins" in merged and "plugins" in raw:  # plugins accumulate along the chain
-        raw["plugins"] = list(dict.fromkeys(merged["plugins"] + raw["plugins"]))
-    return _deep_merge(merged, raw)
+        _linearize(p if os.path.isabs(p) else os.path.join(os.path.dirname(path), p), stack + (path,), order, seen)
+    if path not in seen:
+        seen.add(path)
+        order.append((path, raw))
+
+
+def _load_yaml_with_inheritance(path: str) -> Dict[str, Any]:
+    """Merge each file's OWN settings once, ancestors first, parents in listed order, child last.
+
+    With ``inherits: [a.yaml, b.yaml]`` where both inherit base.yaml, the order is
+    base, a, b, child: b's own keys override a's, but values b merely inherited from base
+    can no longer silently undo a's overrides. Plugins accumulate across all files.
+    """
+    order: List[tuple] = []
+    _linearize(path, (), order, set())
+    merged: Dict[str, Any] = {}
+    plugins: List[str] = []
+    for _, raw in order:
+        plugins += raw.pop("plugins", None) or []
+        merged = _deep_merge(merged, raw)
+    if plugins:
+        merged["plugins"] = list(dict.fromkeys(plugins))
+    return merged
 
 
 def _apply_override(d: Dict[str, Any], dotted: str) -> None:
@@ -281,7 +306,9 @@ def _build(cls: Any, data: Any, where: str) -> Any:
     if origin in (list, List):
         return [_build(args[0], x, f"{where}[{i}]") for i, x in enumerate(data or [])]
     if origin in (dict, Dict):
-        return {k: _coerce_number(v) for k, v in (data or {}).items()}
+        vt = args[1] if len(args) == 2 else Any
+        # typed dicts (e.g. Dict[str, float]) are coerced per value; free-form params stay as written
+        return {k: (_build(vt, v, f"{where}.{k}") if vt in (float, int) else v) for k, v in (data or {}).items()}
     if origin is typing.Union:  # Optional[X]
         if data is None:
             return None
@@ -296,16 +323,6 @@ def _build(cls: Any, data: Any, where: str) -> Any:
     return data
 
 
-_NUM = re.compile(r"^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$")
-
-
-def _coerce_number(v: Any) -> Any:
-    if isinstance(v, str) and _NUM.match(v.strip()):
-        f = float(v)
-        return int(f) if f.is_integer() and "." not in v and "e" not in v.lower() else f
-    return v
-
-
 def load_config(path: Optional[str] = None, overrides: Optional[List[str]] = None) -> Config:
     raw = _load_yaml_with_inheritance(path) if path else {}
     for o in overrides or []:
@@ -316,4 +333,4 @@ def load_config(path: Optional[str] = None, overrides: Optional[List[str]] = Non
 def dump_config(cfg: Config, path: str) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w") as f:
-        yaml.safe_dump(cfg.to_dict(), f, sort_keys=False, allow_unicode=True)
+        yaml.dump(cfg.to_dict(), f, Dumper=_Dumper, sort_keys=False, allow_unicode=True)

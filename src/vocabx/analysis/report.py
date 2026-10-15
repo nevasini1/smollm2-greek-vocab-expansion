@@ -15,6 +15,7 @@ Headline quantities (all from a paired, document-clustered bootstrap):
 from __future__ import annotations
 
 import glob
+import json
 import os
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -42,6 +43,26 @@ def _load_run(workdir: str, run: str) -> Dict[str, Any]:
     if os.path.exists(p):
         out["dev"] = list(read_jsonl(p))
     return out
+
+
+def _flatten(d: Any, prefix: str = "") -> Dict[str, Any]:
+    if isinstance(d, dict):
+        out: Dict[str, Any] = {}
+        for k, v in d.items():
+            out.update(_flatten(v, f"{prefix}{k}."))
+        return out
+    return {prefix[:-1]: d}
+
+
+def _signature_diff(opt_sig: Dict[str, str]) -> str:
+    flat = {r: _flatten(json.loads(v)) for r, v in opt_sig.items()}
+    keys = sorted({k for f in flat.values() for k in f})
+    parts = []
+    for k in keys:
+        vals = {r: f.get(k) for r, f in flat.items()}
+        if len({json.dumps(v) for v in vals.values()}) > 1:
+            parts.append(f"`{k}`: " + ", ".join(f"{r}={v}" for r, v in vals.items()))
+    return "; ".join(parts)
 
 
 def exchange_cell(extra_en: np.ndarray, extra_el: np.ndarray) -> str:
@@ -73,6 +94,7 @@ def build_report(
     n_boot: int = 10_000,
     title: str = "Results",
     pairs: Optional[Sequence[Sequence[str]]] = None,
+    pool_pairs: bool = False,
 ) -> Dict[str, Any]:
     out_dir = out_dir or os.path.join(workdir, "results")
     os.makedirs(out_dir, exist_ok=True)
@@ -103,7 +125,12 @@ def build_report(
             sets_by_lang[rec["language"]].append(rec["set"])
     all_sets = [s for v in sets_by_lang.values() for s in v]
     boot = bootstrap_bpb(models, all_sets, n_boot=n_boot)
-    mac = {m: {lang: macro(boot[m], sets) for lang, sets in sets_by_lang.items()} for m in models}
+    # language macros only over sets EVERY model was scored on, so contrasts compare like with like
+    common = {lang: [s_ for s_ in sets if all(s_ in boot[m] for m in models)] for lang, sets in sets_by_lang.items()}
+    dropped_sets = sorted({s_ for lang, sets in sets_by_lang.items() for s_ in sets if s_ not in common[lang]})
+    if dropped_sets:
+        LOG.warning("sets left out of the macro BPB (not scored for every model): %s", dropped_sets)
+    mac = {m: {lang: macro(boot[m], sets) for lang, sets in common.items() if sets} for m in models}
 
     # ---- budget sanity: token-budget runs must match tokens and steps (greek_bytes ablations are
     # deliberately shorter and are excluded from the check)
@@ -112,15 +139,35 @@ def build_report(
                   if (meta[r].get("config", {}).get("train", {}).get("budget_mode", "tokens")) == "tokens"]
     budget_check = {r: (meta[r]["budget"]["tokens"], meta[r]["budget"]["steps"]) for r in token_runs}
     matched = len(set(budget_check.values())) <= 1
+    # optimisation must match too (peak LR, schedule, sequence length, tokens/step), incl. greek_bytes runs
+    opt_sig = {}
+    for r in trained:
+        sig = meta[r].get("budget_signature") or {}
+        if sig:
+            opt_sig[r] = json.dumps({k: sig.get(k) for k in ("optim", "schedule", "seq_len", "tokens_per_step")}, sort_keys=True)
+    opt_matched = len(set(opt_sig.values())) <= 1
+    if not opt_matched:
+        groups: Dict[str, List[str]] = {}
+        for r, v in opt_sig.items():
+            groups.setdefault(v, []).append(r)
+        LOG.error("optimisation settings differ across trained runs: %s", list(groups.values()))
+    matched = matched and opt_matched
     if not matched:
-        LOG.error("token/step budgets differ across trained runs: %s -- extra-cost columns are NOT valid", budget_check)
+        LOG.error("budgets/optimisation differ across trained runs: %s -- extra-cost columns are NOT valid", budget_check)
 
     # ---- main table
     lines = [f"# {title}", ""]
     lines.append(f"Baseline: `{baseline}`; reference for extra-cost columns: `{reference}`. "
                  f"95% CIs from a paired bootstrap over documents ({n_boot} resamples). BPB = bits per UTF-8 byte (lower is better).")
     lines.append("")
-    lines.append(f"Token/step budgets matched across token-budget runs: **{'yes' if matched else 'NO'}** {budget_check}")
+    lines.append(f"Token/step budgets and optimisation (peak LR, schedule, seq len) matched across trained runs: "
+                 f"**{'yes' if matched else 'NO'}** {budget_check}")
+    if not opt_matched:
+        lines.append("")
+        lines.append("> **Optimisation differs between runs** (fields that are not identical): " + _signature_diff(opt_sig))
+    if dropped_sets:
+        lines.append("")
+        lines.append(f"> Sets excluded from the macro BPB (not scored for every model): {dropped_sets}")
     if not matched:
         lines.append("")
         lines.append("> **WARNING: budgets differ, so the extra-cost / exchange columns compare unequal training. Do not report them.**")
@@ -185,14 +232,16 @@ def build_report(
                   "| model | vs | extra EN cost (BPB) | extra EL gain (BPB) | EN-per-EL exchange |", "|---|---|---|---|---|"]
         for x, r, ee, eg in pair_rows:
             lines.append(f"| `{x}` | `{r}` | {_fmt(*ci(ee), signed=True)} | {_fmt(*ci(eg), signed=True)} | {exchange_cell(ee, eg)} |")
-        if len(pair_rows) > 1:
+        if pool_pairs and len(pair_rows) > 1:  # only meaningful for seed replicates of one contrast
             ee_m = np.mean([p[2] for p in pair_rows], axis=0)
             eg_m = np.mean([p[3] for p in pair_rows], axis=0)
             pts_ee = [p[2][0] for p in pair_rows]
             lines.append(f"| **mean of {len(pair_rows)} pairs** | | {_fmt(*ci(ee_m), signed=True)} (pair SD {np.std(pts_ee, ddof=1):.4f}) "
                          f"| {_fmt(*ci(eg_m), signed=True)} | {exchange_cell(ee_m, eg_m)} |")
+            lines.append("")
+            lines.append("Pair-mean CIs cover evaluation noise only; the pair SD across seeds estimates training noise.")
         lines.append("")
-        lines.append("Pair-mean CIs cover evaluation noise only; the pair SD across seeds estimates training noise.")
+        lines.append("Each pair's CI is a paired document bootstrap (evaluation noise only, not training noise).")
 
     # ---- per-set table
     lines += ["", "## Per eval set (BPB, point estimates)", ""]
