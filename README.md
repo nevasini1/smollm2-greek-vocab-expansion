@@ -171,7 +171,8 @@ under `data.greek` or `data.english` (with `test_docs`/`dev_docs`) and under `ev
 
 **Re-evaluating old runs with new evals:** `python -m vocabx eval --config <run config>` re-scores
 the saved `final/` model. It uses the tokenizer saved *with* that model, never one rebuilt from an
-edited config. Per-document records allow paired comparison with every earlier run.
+edited config. For the baseline, and for Exp2's step-0 state (`--untrained`), it rebuilds the
+untrained model and re-scores it. Per-document records allow paired comparison with every earlier run.
 
 **More analysis commands:**
 - `vocabx interpolate`: WiSE-FT frontiers θ(α) between a run's start and end weights.

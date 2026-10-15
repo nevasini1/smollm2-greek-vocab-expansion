@@ -8,5 +8,6 @@ report:
   name: seeds
   baseline: base
   reference: exp1_finetune
+  pool_pairs: true   # the pairs are seed replicates of ONE contrast, so their mean/SD is meaningful
   pairs: [[exp2_extend, exp1_finetune], [exp2_extend_s1, exp1_finetune_s1], [exp2_extend_s2, exp1_finetune_s2]]
   runs: [base, exp1_finetune, exp2_extend, exp1_finetune_s1, exp2_extend_s1, exp1_finetune_s2, exp2_extend_s2]

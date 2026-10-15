@@ -117,13 +117,23 @@ def cmd_eval(args) -> None:
 
     from .tokenization.extenders import TokenizerBundle
 
+    from .modeling.surgery import build_model
+
     cfg = _cfg(args)
     setup_logging(logfile=os.path.join(cfg.run_dir, "eval.log"))
     final = os.path.join(cfg.run_dir, "final")
-    if not os.path.exists(final):
-        raise SystemExit(f"{final} not found; train the run first (or use `train` with max_steps=0 for baselines)")
     device = pick_device()
     amp, _ = resolve_precision(cfg.train.precision, device)
+    if args.untrained or (cfg.train.max_steps == 0 and not os.path.exists(final)):
+        # the untrained state: the original model (baseline) or the expanded model at step 0 (Exp2)
+        tag = args.tag if (args.tag != "final" or cfg.train.max_steps == 0) else "step0"
+        bundle = build_tokenizer(cfg)
+        model, _ = build_model(cfg, bundle, device)
+        LOG.info("re-scoring the untrained state of %s as tag '%s'", cfg.run_name, tag)
+        run_full_eval(cfg, model, bundle, device, amp, os.path.join(cfg.run_dir, "eval"), tag)
+        return
+    if not os.path.exists(final):
+        raise SystemExit(f"{final} not found; train the run first, or pass --untrained to score its step-0 state")
     # the tokenizer saved WITH the model, never one rebuilt from the (possibly edited) config
     bundle = TokenizerBundle.from_model_dir(final, cfg.model.name, cfg.model.revision)
     model = load_base_model(final, attn_implementation=cfg.model.attn_implementation).to(device)
@@ -160,7 +170,7 @@ def cmd_plan(args) -> None:
         wd = workdirs.pop()
         build_report(wd, rep.get("runs", names), rep["baseline"], rep.get("reference"),
                      out_dir=os.path.join(wd, "results", rep.get("name", "main")), title=rep.get("title", "Results"),
-                     pairs=rep.get("pairs"))
+                     pairs=rep.get("pairs"), pool_pairs=bool(rep.get("pool_pairs", False)))
 
 
 def cmd_report(args) -> None:
@@ -192,13 +202,22 @@ def cmd_curves(args) -> None:
 
     from .utils import read_jsonl, write_json
 
+    from .utils import read_json
+
     evs = {}
+    problems = []
     for run in args.runs:
-        path = os.path.join(args.workdir, "runs", run, "dev_evals.jsonl")
-        if os.path.exists(path):
-            evs[run] = list(read_jsonl(path))
-        else:
-            print(f"{run}: no dev_evals.jsonl")
+        rdir = os.path.join(args.workdir, "runs", run)
+        path = os.path.join(rdir, "dev_evals.jsonl")
+        if not os.path.exists(os.path.join(rdir, "summary.json")) or not os.path.exists(path):
+            problems.append(f"{run}: not finished (no summary.json / dev_evals.jsonl)")
+            continue
+        ev = list(read_jsonl(path))
+        planned = read_json(os.path.join(rdir, "summary.json")).get("max_steps")
+        if not ev or ev[-1]["step"] != planned:
+            problems.append(f"{run}: last dev eval at step {ev[-1]['step'] if ev else None}, planned {planned}")
+            continue
+        evs[run] = ev
     anchor = next((ev[0] for ev in evs.values() if "new_row_norm" not in ev[0]), None)
     if anchor is None:
         print("WARNING: no run without new rows -> falling back to each run's own step 0 (biased for expanded runs)")
@@ -217,8 +236,18 @@ def cmd_curves(args) -> None:
         ratio = d_en / -d_el if d_el < 0 else float("inf")
         print(f"{run:28s} steps {last['step']:4d}  dEL {d_el:+.4f}  dEN {d_en:+.4f}  EN-loss/EL-gain {ratio:.3f}")
     by_lr: Dict[str, list] = {}
-    for _, lr, d_el, d_en in rows:
+    arms: Dict[str, set] = {}
+    for run, lr, d_el, d_en in rows:
         by_lr.setdefault(lr, []).append((d_el, d_en))
+        arms.setdefault(lr, set()).add("extended" if "new_row_norm" in evs[run][0] else "original")
+    for lr, a in arms.items():
+        if lr != "?" and a != {"extended", "original"}:
+            problems.append(f"lr {lr}: only the {sorted(a)} arm finished (the rule averages BOTH arms)")
+    if problems:
+        print("NOT writing lr_choice.json - the pre-registered rule needs every listed run finished:")
+        for p_ in problems:
+            print("  -", p_)
+        raise SystemExit(2)
     ok = []
     for lr, v in by_lr.items():
         if lr == "?":
@@ -272,7 +301,10 @@ def main(argv: Optional[List[str]] = None) -> None:
     sp = add("train", cmd_train)
     sp.add_argument("--no-resume", action="store_true")
     sp.add_argument("--no-eval", action="store_true")
-    add("eval", cmd_eval).add_argument("--tag", default="final")
+    sp = add("eval", cmd_eval)
+    sp.add_argument("--tag", default="final")
+    sp.add_argument("--untrained", action="store_true",
+                    help="score the untrained state (baseline / Exp2 step 0) instead of final/")
     sp = sub.add_parser("plan")
     sp.add_argument("plan")
     sp.add_argument("--set", action="append", default=[])
