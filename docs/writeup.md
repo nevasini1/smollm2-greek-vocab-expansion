@@ -30,7 +30,7 @@
   the same order, with no document seen twice. It exceeds the brief's ~100 MB so that Exp2, which reads
   2.8× more text per token (90.5 MB in total), stays well under one pass (0.60 epochs; Exp1 0.21). All
   weights trained with AdamW, peak learning rate 3e-4, warmup–stable–decay schedule. Only difference:
-  Exp2's new embedding rows learn 10× faster.
+  Exp2's new embedding rows learn 10× faster, with no weight decay.
 
 ## 2. How the vocabulary is changed
 The new tokens come from **continuing SmolLM2's own BPE**:
@@ -43,7 +43,7 @@ Nothing is removed or renumbered, and the tokenizer really produces every new to
 separately trained Greek tokenizer would leave 5–17% of its tokens unusable here).
 
 - **English without Greek letters tokenizes exactly as before**, since new merges only match Greek.
-  Checked on all 3,761 such English test passages and 502 random strings.
+  Checked on all 3,761 such English test passages and 502 random non-Greek strings.
 - **Greek needs 2.9× fewer tokens:** 1.93 instead of 5.57 per word on held-out text.
 - **New tokens start safely.** SmolLM2 uses one matrix to read and to predict tokens (*tied
   embeddings*), so a new row also sets how often its token is predicted. Each starts as the average of
@@ -114,7 +114,8 @@ the number of updates or the amount of text.
 have measured points, Exp2's path is lower: at Exp1's final Greek level it had lost about 0.04 BPB less
 English, and at Exp1's final English level it was about 0.04 BPB better on Greek. The 0.69 ratio looks
 high only because it counts the *extra* Greek beyond Exp1, which costs more than the first gains; from
-the original model the ratio is 0.37 for Exp1 and 0.44 for Exp2.
+the original model the ratio is 0.37 for Exp1 and 0.44 for Exp2. (Per character rather than per byte,
+the 0.69 is about 0.38, because a Greek letter takes 2 bytes.)
 
 **What the extra English loss is made of.**
 - **About a third is leakage: Exp2 predicts its new Greek tokens inside English text.** Through the tied
@@ -146,9 +147,10 @@ the original model the ratio is 0.37 for Exp1 and 0.44 for Exp2.
   read, both learn at about the same rate (Fig. 1).
 
 ## 7. Limitations and next steps
-- **One training run per experiment** (seed repeats planned, not run). Published seed noise for models
-  this size is 0.001–0.003 BPB: far below the main effects (0.044–0.122), but too close to the 0.009
-  Greek gap between Exp2-early and Exp1 to call it real, so that gap is a tie.
+- **One training run per experiment** (seed repeats planned, not run), so seed noise was not measured
+  here. Published figures for models this size trained from scratch are 0.001–0.003 BPB, and continued
+  training may vary more. The main effects (0.044–0.122) are far larger, but the 0.009 Greek gap between
+  Exp2-early and Exp1 is too small to call real: read it as a tie.
 - **One learning rate**, set in advance, plus Exp2's 10× rate for new rows, which may drive leakage.
 - **No English in the training mix**, since the brief says to continue training "on the Greek corpus",
   so both models forget a lot of English.
