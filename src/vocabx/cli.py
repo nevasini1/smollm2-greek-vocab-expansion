@@ -331,6 +331,15 @@ def main(argv: Optional[List[str]] = None) -> None:
     args = p.parse_args(argv)
     setup_logging()
     args.fn(args)
+    # Streaming `datasets` readers leave non-daemon download threads behind, which can keep the
+    # interpreter alive after the work is done (seen on Colab after `prepare`). Every artifact is
+    # written atomically before this point, so flush and exit hard.
+    import logging
+
+    logging.shutdown()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(0)
 
 
 if __name__ == "__main__":  # pragma: no cover
