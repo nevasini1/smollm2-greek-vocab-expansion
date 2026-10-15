@@ -12,9 +12,25 @@ Every component is a plug-in behind a registry and every experiment is a YAML fi
 tokenizer extenders, embedding initialisers, training schedules, data sources and evals can be
 added without touching the training loop.
 
+## Results (free Colab T4, matched budget: 453 steps / 14.8M tokens, ≤30 min per arm)
+
+| bits per byte (lower = better), macro over 3 test sets | Greek | English |
+|---|---|---|
+| original SmolLM2-135M | 1.285 | 0.964 |
+| **Exp1** fine-tune, original tokenizer | 0.874 | 1.117 |
+| **Exp2** +8,000 Greek tokens | **0.751** | 1.201 |
+| Exp2 stopped at Exp1's Greek bytes (supplementary: 159 steps, 35% of the compute) | 0.865 | **1.073** |
+
+- **Matched tokens:** Exp2 gains an extra 0.122 BPB of Greek for an extra 0.084 BPB of English.
+- **Matched Greek text:** Exp2 matches Exp1's Greek with about a third of the compute and forgets 0.044 BPB less English.
+- **Writeup (1–2 pages):** [`docs/writeup.md`](docs/writeup.md). Raw outputs:
+  [`results/t4_run/`](results/t4_run/).
+
+## Documentation
+
 - Why each choice was made, with evidence: [`docs/design.md`](docs/design.md)
 - Full literature/tooling sweep: [`docs/research_report.md`](docs/research_report.md)
-- 1–2 page writeup skeleton: [`docs/writeup.md`](docs/writeup.md)
+- The 1–2 page writeup with results: [`docs/writeup.md`](docs/writeup.md)
 
 ## Quick start
 
@@ -99,7 +115,7 @@ The rationale for each item is in [`docs/design.md`](docs/design.md).
 | data | 150 MB Greek pool (Wikipedia + FineWeb-2), same docs, same order | same |
 | budget | 600 steps × 32,768 tokens (19.7M), seq 1024 | identical (asserted) |
 | optimizer | AdamW (0.9, 0.95), wd 0.01 on body matrices, clip 1.0 | identical + new rows at 10× LR, wd 0 |
-| schedule | WSD, peak 3e-4, 5% warmup, last 20% linear decay | identical (same absolute steps) |
+| schedule | WSD, peak 3e-4, 7.5% warmup, last 20% linear decay | identical (same absolute steps) |
 | precision | fp32 master, fp16 autocast + GradScaler on T4 | identical |
 | eval | BPB on 3 Greek + 3 English held-out sets, single-window chunks; cloze tasks; generation | identical + step-0 eval + new-token diagnostics |
 

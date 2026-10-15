@@ -1,0 +1,162 @@
+{
+  "tag": "final",
+  "run": "exp2_extend",
+  "vocab_size": 57152,
+  "intrinsic": {
+    "wikipedia_el": {
+      "language": "el",
+      "chunks": 1441,
+      "docs": 500,
+      "bpb": 0.7328095994647846,
+      "bpc": 1.3044011396862956,
+      "word_ppl": 447.090504768356,
+      "token_ppl_within_model": 19.73540928832608,
+      "tokens_per_word": 2.0462484848484848,
+      "bytes_per_token": 5.871531346351491,
+      "mean_mass_new": 0.7042383801519275,
+      "bpb_old_vocab": 0.6954860929621779,
+      "frac_new_id_targets": 0.7054417396506838
+    },
+    "fineweb2_el": {
+      "language": "el",
+      "chunks": 1246,
+      "docs": 500,
+      "bpb": 0.7945245534317529,
+      "bpc": 1.4295976994755997,
+      "word_ppl": 682.2399582770752,
+      "token_ppl_within_model": 34.25621735380841,
+      "tokens_per_word": 1.846526610248513,
+      "bytes_per_token": 6.416785897367233,
+      "mean_mass_new": 0.7829394548076763,
+      "bpb_old_vocab": 0.7541132537384048,
+      "frac_new_id_targets": 0.7854421227400363
+    },
+    "belebele_el": {
+      "language": "el",
+      "chunks": 496,
+      "docs": 486,
+      "bpb": 0.7262250237741018,
+      "bpc": 1.3199388686690174,
+      "word_ppl": 431.7181159634422,
+      "token_ppl_within_model": 32.58573961792973,
+      "tokens_per_word": 1.741673650185562,
+      "bytes_per_token": 6.920952420230681,
+      "mean_mass_new": 0.815456751804215,
+      "bpb_old_vocab": 0.6943508788200726,
+      "frac_new_id_targets": 0.8282949093358629
+    },
+    "fineweb_edu_en": {
+      "language": "en",
+      "chunks": 1579,
+      "docs": 500,
+      "bpb": 1.130766839207948,
+      "bpc": 1.136507987270546,
+      "word_ppl": 122.94401225743394,
+      "token_ppl_within_model": 38.0462197353679,
+      "tokens_per_word": 1.3223388974193868,
+      "bytes_per_token": 4.642585038600276,
+      "mean_mass_new": 0.05369447119117937,
+      "bpb_old_vocab": 1.1091284882154016,
+      "frac_new_id_targets": 2.62204691965362e-05
+    },
+    "bbc_news_2025_en": {
+      "language": "en",
+      "chunks": 1698,
+      "docs": 500,
+      "bpb": 1.2944593494685046,
+      "bpc": 1.2953795750158494,
+      "word_ppl": 195.72273815280815,
+      "token_ppl_within_model": 55.89999773206545,
+      "tokens_per_word": 1.3114489072677227,
+      "bytes_per_token": 4.484324920521638,
+      "mean_mass_new": 0.06489814749047229,
+      "bpb_old_vocab": 1.2661933142051194,
+      "frac_new_id_targets": 0.0
+    },
+    "belebele_en": {
+      "language": "en",
+      "chunks": 488,
+      "docs": 483,
+      "bpb": 1.178296416380592,
+      "bpc": 1.1793513881285775,
+      "word_ppl": 141.10219570477395,
+      "token_ppl_within_model": 49.80861600195323,
+      "tokens_per_word": 1.2664397014534503,
+      "bytes_per_token": 4.785148576273289,
+      "mean_mass_new": 0.07420387128044342,
+      "bpb_old_vocab": 1.1475379087066802,
+      "frac_new_id_targets": 0.0
+    }
+  },
+  "downstream": {
+    "hellaswag_el": {
+      "task": "hellaswag_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.252,
+      "acc_norm": 0.288,
+      "gold_bpb": 0.7319392126822102,
+      "acc_norm_se": 0.020251222185339826
+    },
+    "hellaswag_en": {
+      "task": "hellaswag_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.328,
+      "acc_norm": 0.382,
+      "gold_bpb": 1.100058091394101,
+      "acc_norm_se": 0.02172905888436036
+    },
+    "arc_easy_el": {
+      "task": "arc_easy_el",
+      "language": "el",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.296,
+      "acc_norm": 0.268,
+      "gold_bpb": 1.2097042111560274,
+      "acc_norm_se": 0.0198078772209442
+    },
+    "arc_easy_en": {
+      "task": "arc_easy_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.25,
+      "acc": 0.54,
+      "acc_norm": 0.484,
+      "gold_bpb": 1.4825671238060139,
+      "acc_norm_se": 0.022349228174592516
+    },
+    "piqa_en": {
+      "task": "piqa_en",
+      "language": "en",
+      "n": 500,
+      "chance": 0.5,
+      "acc": 0.632,
+      "acc_norm": 0.638,
+      "gold_bpb": 1.4374121508753503,
+      "acc_norm_se": 0.021492138097453217
+    }
+  },
+  "generation": {
+    "el": {
+      "script_ratio": 1.0,
+      "distinct_2": 0.7994352308884998,
+      "rep_4gram": 0.11309941417278374,
+      "bytes_per_token": 5.826405038055941,
+      "short_or_empty": 0,
+      "n": 16
+    },
+    "en": {
+      "script_ratio": 0.40660122877173943,
+      "distinct_2": 0.6016739899963585,
+      "rep_4gram": 0.29188476659935636,
+      "bytes_per_token": 5.3237112807991425,
+      "short_or_empty": 0,
+      "n": 16
+    }
+  },
+  "eval_seconds": 176.24035787582397
+}

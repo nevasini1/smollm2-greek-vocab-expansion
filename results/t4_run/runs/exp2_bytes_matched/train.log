@@ -1,0 +1,55 @@
+14:55:25 INFO vocabx | data artifact exists: /content/vocabx_store/artifacts/data/1f6728b731df
+14:55:27 INFO vocabx | attention: disabled (repeat_kv; pre-Ampere GPU)
+14:55:29 INFO numexpr.utils | NumExpr defaulting to 2 threads.
+14:55:31 WARNING huggingface_hub.utils._http | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+14:55:32 INFO vocabx | expanded vocab 49152 -> 57152 with fvt_mean (new-row norm 2.57 vs old 3.18)
+14:55:33 INFO vocabx | greek_bytes budget: 31822034 reference bytes -> 159 steps
+14:55:34 INFO vocabx | run exp2_bytes_matched: 159 steps x 32768 tokens = 5.2M tokens; device=cuda amp=torch.float16; vocab 57152 (+8000)
+14:55:34 INFO vocabx | el stream: 5088 blocks needed, 24047 per epoch -> 0.21 epochs
+14:55:41 INFO vocabx | dev eval @0 (8s): wikipedia_el:dev=2.0530  fineweb2_el:dev=2.0695  fineweb_edu_en:dev=0.9140
+14:55:45 INFO vocabx | step    1/159 [all] loss/tok 8.5577 train_bpb 2.0824 lr 2.50e-05 (new rows 2.50e-04) gn 10.33 scale 1024 9043 tok/s
+14:56:18 INFO vocabx | step   10/159 [all] loss/tok 6.4085 train_bpb 1.4520 lr 2.50e-04 (new rows 2.50e-03) gn 4.22 scale 1024 8956 tok/s
+14:56:55 INFO vocabx | step   20/159 [all] loss/tok 5.8233 train_bpb 1.3419 lr 3.00e-04 (new rows 3.00e-03) gn 2.62 scale 1024 8578 tok/s
+14:57:34 INFO vocabx | step   30/159 [all] loss/tok 5.0317 train_bpb 1.1777 lr 3.00e-04 (new rows 3.00e-03) gn 0.94 scale 1024 8564 tok/s
+14:58:12 INFO vocabx | step   40/159 [all] loss/tok 4.5189 train_bpb 1.0207 lr 3.00e-04 (new rows 3.00e-03) gn 1.13 scale 1024 8563 tok/s
+14:58:50 INFO vocabx | step   50/159 [all] loss/tok 4.7639 train_bpb 1.0858 lr 3.00e-04 (new rows 3.00e-03) gn 1.25 scale 1024 8557 tok/s
+14:59:29 INFO vocabx | step   60/159 [all] loss/tok 4.3694 train_bpb 1.0012 lr 3.00e-04 (new rows 3.00e-03) gn 1.05 scale 1024 8532 tok/s
+15:00:07 INFO vocabx | step   70/159 [all] loss/tok 4.2084 train_bpb 1.0211 lr 3.00e-04 (new rows 3.00e-03) gn 0.85 scale 1024 8570 tok/s
+15:00:52 INFO vocabx | checkpoint saved at step 79
+15:00:55 INFO vocabx | step   80/159 [all] loss/tok 4.0123 train_bpb 0.9863 lr 3.00e-04 (new rows 3.00e-03) gn 0.97 scale 1024 8602 tok/s
+15:01:34 INFO vocabx | step   90/159 [all] loss/tok 4.0497 train_bpb 0.9505 lr 3.00e-04 (new rows 3.00e-03) gn 0.98 scale 1024 8447 tok/s
+15:02:12 INFO vocabx | step  100/159 [all] loss/tok 4.0832 train_bpb 0.9470 lr 3.00e-04 (new rows 3.00e-03) gn 0.99 scale 1024 8595 tok/s
+15:02:20 INFO vocabx | dev eval @100 (8s): wikipedia_el:dev=0.9003  fineweb2_el:dev=0.9809  fineweb_edu_en:dev=0.9850
+15:02:59 INFO vocabx | step  110/159 [all] loss/tok 3.9148 train_bpb 0.9468 lr 3.00e-04 (new rows 3.00e-03) gn 0.93 scale 1024 8531 tok/s
+15:03:37 INFO vocabx | step  120/159 [all] loss/tok 3.7206 train_bpb 0.8979 lr 3.00e-04 (new rows 3.00e-03) gn 1.13 scale 1024 8575 tok/s
+15:04:15 INFO vocabx | step  130/159 [all] loss/tok 3.7684 train_bpb 0.8896 lr 2.81e-04 (new rows 2.81e-03) gn 0.94 scale 1024 8561 tok/s
+15:04:54 INFO vocabx | step  140/159 [all] loss/tok 3.7529 train_bpb 0.8745 lr 1.87e-04 (new rows 1.87e-03) gn 0.79 scale 1024 8542 tok/s
+15:05:32 INFO vocabx | step  150/159 [all] loss/tok 3.9351 train_bpb 0.9537 lr 9.37e-05 (new rows 9.37e-04) gn 0.75 scale 1024 8550 tok/s
+15:06:07 INFO vocabx | checkpoint saved at step 156
+15:06:19 INFO vocabx | step  159/159 [all] loss/tok 4.1401 train_bpb 1.0804 lr 9.37e-06 (new rows 9.37e-05) gn 1.16 scale 1024 8588 tok/s
+15:06:26 INFO vocabx | dev eval @159 (8s): wikipedia_el:dev=0.8304  fineweb2_el:dev=0.9175  fineweb_edu_en:dev=1.0088
+15:06:30 INFO datasets | TensorFlow version 2.21.0 available.
+15:06:30 INFO datasets | JAX version 0.11.1 available.
+15:07:34 INFO vocabx | [final] wikipedia_el           BPB 0.8520  tok/word 2.05  mass_new 0.7022
+15:07:34 INFO vocabx | [final] fineweb2_el            BPB 0.9062  tok/word 1.85  mass_new 0.7793
+15:07:34 INFO vocabx | [final] belebele_el            BPB 0.8356  tok/word 1.74  mass_new 0.8140
+15:07:34 INFO vocabx | [final] fineweb_edu_en         BPB 1.0145  tok/word 1.32  mass_new 0.0153
+15:07:34 INFO vocabx | [final] bbc_news_2025_en       BPB 1.1636  tok/word 1.31  mass_new 0.0170
+15:07:34 INFO vocabx | [final] belebele_en            BPB 1.0406  tok/word 1.27  mass_new 0.0201
+15:07:35 INFO vocabx | run exp2_bytes_matched done: 10.1 min of training
+15:07:35 INFO vocabx | exp1_replay20: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_replay20: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_staged: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_init_alpha075: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_k2000: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_newlr1x: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_init_merge: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_naive_merge: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_k4000: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_init_random: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_init_globalmean: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 INFO vocabx | exp2_k16000: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+15:07:35 WARNING vocabx | skipping unfinished runs in report: ['exp1_replay20', 'exp2_replay20', 'exp2_staged', 'exp2_init_alpha075', 'exp2_k2000', 'exp2_newlr1x', 'exp2_init_merge', 'exp2_naive_merge', 'exp2_k4000', 'exp2_init_random', 'exp2_init_globalmean', 'exp2_k16000']
+15:07:38 WARNING vocabx | pair (exp2_replay20, exp1_replay20) skipped: missing records
+15:07:38 WARNING vocabx | pair (exp2_staged, exp2_extend) skipped: missing records
+15:07:40 INFO vocabx | report written to /content/vocabx_store/artifacts/results/ablations

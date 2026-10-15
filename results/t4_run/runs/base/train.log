@@ -1,0 +1,20 @@
+13:06:38 WARNING huggingface_hub.utils._http | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+13:06:38 INFO vocabx | tokenizer bundle saved to /content/vocabx_store/artifacts/tokenizers/base-5ae0947d45a5 (vocab 49152 = 49152 + 0)
+13:06:38 INFO vocabx | data artifact exists: /content/vocabx_store/artifacts/data/1f6728b731df
+13:06:41 INFO vocabx | attention: disabled (repeat_kv; pre-Ampere GPU)
+13:06:43 INFO numexpr.utils | NumExpr defaulting to 2 threads.
+13:08:30 INFO vocabx | [final] wikipedia_el           BPB 1.2997  tok/word 5.67  mass_new 0.0000
+13:08:30 INFO vocabx | [final] fineweb2_el            BPB 1.2820  tok/word 5.48  mass_new 0.0000
+13:08:30 INFO vocabx | [final] belebele_el            BPB 1.2735  tok/word 5.51  mass_new 0.0000
+13:08:30 INFO vocabx | [final] fineweb_edu_en         BPB 0.9178  tok/word 1.32  mass_new 0.0000
+13:08:30 INFO vocabx | [final] bbc_news_2025_en       BPB 1.0486  tok/word 1.31  mass_new 0.0000
+13:08:30 INFO vocabx | [final] belebele_en            BPB 0.9266  tok/word 1.27  mass_new 0.0000
+13:08:30 INFO datasets | TensorFlow version 2.21.0 available.
+13:08:30 INFO datasets | JAX version 0.11.1 available.
+13:09:01 INFO vocabx | [final] hellaswag_el   acc_norm 0.294 (chance 0.25)  gold_bpb 1.174
+13:09:08 INFO vocabx | [final] hellaswag_en   acc_norm 0.410 (chance 0.25)  gold_bpb 0.899
+13:09:21 INFO vocabx | [final] arc_easy_el    acc_norm 0.254 (chance 0.25)  gold_bpb 1.654
+13:09:24 INFO vocabx | [final] arc_easy_en    acc_norm 0.558 (chance 0.25)  gold_bpb 1.157
+13:09:29 INFO vocabx | [final] piqa_en        acc_norm 0.674 (chance 0.50)  gold_bpb 1.182
+13:12:06 INFO vocabx | exp1_finetune: max_steps 600 -> 453 from /content/vocabx_store/artifacts/budget.json
+13:12:06 INFO vocabx | === plan: exp1_finetune (/content/vocabx/configs/plans/../exp1_finetune.yaml)

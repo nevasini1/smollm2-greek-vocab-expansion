@@ -80,7 +80,7 @@ def plot_frontiers(workdir: str, runs: Sequence[str], out_path: str) -> None:
             ax.annotate(f"{q['alpha']:.2g}", (q["el_bpb"], q["en_bpb"]), fontsize=7)
     ax.set_xlabel("Greek BPB (macro)")
     ax.set_ylabel("English BPB (macro)")
-    ax.set_title("Weight-interpolation frontiers (alpha = share of fine-tuned weights)")
+    ax.set_title("Weight-interpolation frontiers (labels = alpha)")
     ax.grid(alpha=0.3)
     ax.legend(fontsize=8)
     fig.tight_layout()

@@ -1,0 +1,6 @@
+14:47:07 INFO numexpr.utils | NumExpr defaulting to 2 threads.
+14:47:37 INFO vocabx | [interp exp1_finetune] alpha=0.00  EL 1.2773  EN 0.9051
+14:48:02 INFO vocabx | [interp exp1_finetune] alpha=0.25  EL 1.1113  EN 0.9145
+14:48:28 INFO vocabx | [interp exp1_finetune] alpha=0.50  EL 0.9861  EN 0.9418
+14:48:55 INFO vocabx | [interp exp1_finetune] alpha=0.75  EL 0.9073  EN 0.9867
+14:49:22 INFO vocabx | [interp exp1_finetune] alpha=1.00  EL 0.8784  EN 1.0505

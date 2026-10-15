@@ -1,0 +1,121 @@
+run_name: exp2_extend
+workdir: /content/vocabx_store/artifacts
+seed: 0
+plugins: []
+notes: ''
+model:
+  name: HuggingFaceTB/SmolLM2-135M
+  revision: main
+  attn_implementation: sdpa
+data:
+  greek:
+  - source: wikipedia_el
+    train_mb: 75.0
+    dev_docs: 150
+    test_docs: 500
+    params: {}
+  - source: fineweb2_el
+    train_mb: 75.0
+    dev_docs: 150
+    test_docs: 500
+    params: {}
+  - source: belebele_el
+    train_mb: 0.0
+    dev_docs: 0
+    test_docs: 488
+    params: {}
+  english:
+  - source: fineweb_edu_en
+    train_mb: 30.0
+    dev_docs: 150
+    test_docs: 500
+    params: {}
+  - source: bbc_news_2025_en
+    train_mb: 0.0
+    dev_docs: 0
+    test_docs: 500
+    params: {}
+  - source: belebele_en
+    train_mb: 0.0
+    dev_docs: 0
+    test_docs: 488
+    params: {}
+  min_chars: 200
+  min_script_ratio: 0.6
+  shuffle_buffer: 10000
+  data_seed: 1234
+  dedup_paragraph_min_chars: 60
+  minhash: true
+  minhash_threshold: 0.7
+tokenizer:
+  extender: continued_bpe
+  num_new_tokens: 8000
+  train_mb: 60.0
+  min_frequency: 2
+  params:
+    script_filter: strict
+init:
+  method: fvt_mean
+  params: {}
+train:
+  seq_len: 1024
+  micro_batch_size: 4
+  grad_accum: 8
+  max_steps: 453
+  english_ratio: 0.0
+  optim:
+    lr: 0.0003
+    betas:
+    - 0.9
+    - 0.95
+    eps: 1.0e-08
+    weight_decay: 0.01
+    grad_clip: 1.0
+  schedule:
+    name: wsd
+    warmup_frac: 0.075
+    decay_frac: 0.2
+    min_lr_ratio: 0.0
+  group_lr_mult:
+    emb_new: 10.0
+  stages: []
+  budget_mode: tokens
+  budget_reference: null
+  allow_repeat: false
+  precision: auto
+  grad_scaler_init: 1024.0
+  loss_chunk_tokens: 0
+  compile: false
+  eval_every: 50
+  log_every: 10
+  checkpoint_every_min: 5.0
+  wallclock_limit_min: 30.0
+eval:
+  sets:
+  - wikipedia_el
+  - fineweb2_el
+  - belebele_el
+  - fineweb_edu_en
+  - bbc_news_2025_en
+  - belebele_en
+  dev_sets:
+  - wikipedia_el:dev
+  - fineweb2_el:dev
+  - fineweb_edu_en:dev
+  max_chars: 1000
+  max_chunks_per_doc: 4
+  dev_max_chunks: 200
+  batch_tokens: 16384
+  downstream:
+  - hellaswag_el
+  - hellaswag_en
+  - arc_easy_el
+  - arc_easy_en
+  - piqa_en
+  downstream_n: 500
+  item_seed: 0
+  generation: true
+  generation_prompts: 16
+  generation_bytes: 300
+  bootstrap_samples: 10000
+  full_eval_at_step0: true

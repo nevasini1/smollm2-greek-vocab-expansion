@@ -1,0 +1,180 @@
+{
+  "data_key": "1f6728b731df",
+  "data_config": {
+    "greek": [
+      {
+        "source": "wikipedia_el",
+        "train_mb": 75.0,
+        "dev_docs": 150,
+        "test_docs": 500,
+        "params": {}
+      },
+      {
+        "source": "fineweb2_el",
+        "train_mb": 75.0,
+        "dev_docs": 150,
+        "test_docs": 500,
+        "params": {}
+      },
+      {
+        "source": "belebele_el",
+        "train_mb": 0.0,
+        "dev_docs": 0,
+        "test_docs": 488,
+        "params": {}
+      }
+    ],
+    "english": [
+      {
+        "source": "fineweb_edu_en",
+        "train_mb": 30.0,
+        "dev_docs": 150,
+        "test_docs": 500,
+        "params": {}
+      },
+      {
+        "source": "bbc_news_2025_en",
+        "train_mb": 0.0,
+        "dev_docs": 0,
+        "test_docs": 500,
+        "params": {}
+      },
+      {
+        "source": "belebele_en",
+        "train_mb": 0.0,
+        "dev_docs": 0,
+        "test_docs": 488,
+        "params": {}
+      }
+    ],
+    "min_chars": 200,
+    "min_script_ratio": 0.6,
+    "shuffle_buffer": 10000,
+    "data_seed": 1234,
+    "dedup_paragraph_min_chars": 60,
+    "minhash": true,
+    "minhash_threshold": 0.7
+  },
+  "max_chars": 1000,
+  "max_tokens_per_chunk": 1023,
+  "train": {
+    "train_el": {
+      "path": "train_el.jsonl.gz",
+      "docs": 19372,
+      "bytes": 150120170
+    },
+    "train_en": {
+      "path": "train_en.jsonl.gz",
+      "docs": 6333,
+      "bytes": 30023354
+    }
+  },
+  "eval_sets": {
+    "wikipedia_el": {
+      "language": "el",
+      "source": "wikipedia_el",
+      "role": "test",
+      "docs": 500,
+      "chunks": 1441,
+      "bytes": 1982411,
+      "file": "eval/wikipedia_el.jsonl",
+      "sha256": "10b4d659efc9daeb03afa49324440befd8149754bd292dab3b613b0afb294aab"
+    },
+    "wikipedia_el:dev": {
+      "language": "el",
+      "source": "wikipedia_el",
+      "role": "dev",
+      "docs": 150,
+      "chunks": 451,
+      "bytes": 617846,
+      "file": "eval/wikipedia_el__dev.jsonl",
+      "sha256": "849e7e5c5fd0e66692dcd47c14acd741f379a6815e61a4bd9100db87e42af0d1"
+    },
+    "fineweb2_el": {
+      "language": "el",
+      "source": "fineweb2_el",
+      "role": "test",
+      "docs": 500,
+      "chunks": 1246,
+      "bytes": 1677335,
+      "file": "eval/fineweb2_el.jsonl",
+      "sha256": "f0769703c45007754eab15a5a39c83e7466b5b9304da884d37cf36684635cc6e"
+    },
+    "fineweb2_el:dev": {
+      "language": "el",
+      "source": "fineweb2_el",
+      "role": "dev",
+      "docs": 150,
+      "chunks": 328,
+      "bytes": 432609,
+      "file": "eval/fineweb2_el__dev.jsonl",
+      "sha256": "3028e2c09f70c2ced14367bef15c9f7c08750704d89968464e1f01218487e3dc"
+    },
+    "belebele_el": {
+      "language": "el",
+      "source": "belebele_el",
+      "role": "test",
+      "docs": 486,
+      "chunks": 496,
+      "bytes": 503437,
+      "file": "eval/belebele_el.jsonl",
+      "sha256": "e743623e6644ba0f43cd057f144bbec4436c93d42301bd5d3523bdd0bcabcaa6"
+    },
+    "fineweb_edu_en": {
+      "language": "en",
+      "source": "fineweb_edu_en",
+      "role": "test",
+      "docs": 500,
+      "chunks": 1579,
+      "bytes": 1239417,
+      "file": "eval/fineweb_edu_en.jsonl",
+      "sha256": "0f3db7311e60d7b93efb0ccc8d0a080abee08b09c6bd1dc0ac93e6df7142e660"
+    },
+    "fineweb_edu_en:dev": {
+      "language": "en",
+      "source": "fineweb_edu_en",
+      "role": "dev",
+      "docs": 150,
+      "chunks": 463,
+      "bytes": 358562,
+      "file": "eval/fineweb_edu_en__dev.jsonl",
+      "sha256": "508db3afc8c8623b397496a7c950045750ef3c817c652c0d7b1e00a1805e649f"
+    },
+    "bbc_news_2025_en": {
+      "language": "en",
+      "source": "bbc_news_2025_en",
+      "role": "test",
+      "docs": 500,
+      "chunks": 1698,
+      "bytes": 1382338,
+      "file": "eval/bbc_news_2025_en.jsonl",
+      "sha256": "8ec96110a1869debf86c39fb6a977e5fe0ee466f34a2dbc7c99f70171a619aa3"
+    },
+    "belebele_en": {
+      "language": "en",
+      "source": "belebele_en",
+      "role": "test",
+      "docs": 483,
+      "chunks": 488,
+      "bytes": 231405,
+      "file": "eval/belebele_en.jsonl",
+      "sha256": "c73b3a216250bb483ce1f4023061534c3c78bf765b50b289965523e01e7b528a"
+    }
+  },
+  "cleaning_drops": {
+    "too_short": 333,
+    "wrong_script": 358,
+    "exact_dup": 11
+  },
+  "decontamination_drops": {
+    "wikipedia_el": {
+      "paragraph": 171
+    },
+    "fineweb2_el": {
+      "paragraph": 154
+    },
+    "fineweb_edu_en": {
+      "paragraph": 33
+    }
+  }
+}

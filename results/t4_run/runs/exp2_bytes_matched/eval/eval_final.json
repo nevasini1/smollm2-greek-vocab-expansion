@@ -1,0 +1,92 @@
+{
+  "tag": "final",
+  "run": "exp2_bytes_matched",
+  "vocab_size": 57152,
+  "intrinsic": {
+    "wikipedia_el": {
+      "language": "el",
+      "chunks": 1441,
+      "docs": 500,
+      "bpb": 0.8519561968635407,
+      "bpc": 1.5164820916145871,
+      "word_ppl": 1205.9239804809604,
+      "token_ppl_within_model": 32.05077896624032,
+      "tokens_per_word": 2.0462484848484848,
+      "bytes_per_token": 5.871531346351491,
+      "mean_mass_new": 0.7022044404804506,
+      "bpb_old_vocab": 0.8104053055625217,
+      "frac_new_id_targets": 0.7054417396506838
+    },
+    "fineweb2_el": {
+      "language": "el",
+      "chunks": 1246,
+      "docs": 500,
+      "bpb": 0.9062468384214157,
+      "bpc": 1.630620966675483,
+      "word_ppl": 1707.7802678842622,
+      "token_ppl_within_model": 56.30503103256071,
+      "tokens_per_word": 1.846526610248513,
+      "bytes_per_token": 6.416785897367233,
+      "mean_mass_new": 0.7792577586277022,
+      "bpb_old_vocab": 0.8626309801369174,
+      "frac_new_id_targets": 0.7854421227400363
+    },
+    "belebele_el": {
+      "language": "el",
+      "chunks": 496,
+      "docs": 486,
+      "bpb": 0.835573224510312,
+      "bpc": 1.5186829709042524,
+      "word_ppl": 1076.4260233272673,
+      "token_ppl_within_model": 55.061138297646764,
+      "tokens_per_word": 1.741673650185562,
+      "bytes_per_token": 6.920952420230681,
+      "mean_mass_new": 0.8140107035496609,
+      "bpb_old_vocab": 0.7999774325855094,
+      "frac_new_id_targets": 0.8282949093358629
+    },
+    "fineweb_edu_en": {
+      "language": "en",
+      "chunks": 1579,
+      "docs": 500,
+      "bpb": 1.0144819525227893,
+      "bpc": 1.0196326970390917,
+      "word_ppl": 74.95623128918945,
+      "token_ppl_within_model": 26.169577629348503,
+      "tokens_per_word": 1.3223388974193868,
+      "bytes_per_token": 4.642585038600276,
+      "mean_mass_new": 0.015266518509634777,
+      "bpb_old_vocab": 1.00777570818129,
+      "frac_new_id_targets": 2.62204691965362e-05
+    },
+    "bbc_news_2025_en": {
+      "language": "en",
+      "chunks": 1698,
+      "docs": 500,
+      "bpb": 1.1636400834748084,
+      "bpc": 1.1644673101723233,
+      "word_ppl": 114.82749300503392,
+      "token_ppl_within_model": 37.223459141989345,
+      "tokens_per_word": 1.3114489072677227,
+      "bytes_per_token": 4.484324920521638,
+      "mean_mass_new": 0.01699962813121267,
+      "bpb_old_vocab": 1.1560967845744743,
+      "frac_new_id_targets": 0.0
+    },
+    "belebele_en": {
+      "language": "en",
+      "chunks": 488,
+      "docs": 483,
+      "bpb": 1.0405923932677668,
+      "bpc": 1.041524073582503,
+      "word_ppl": 79.1268918552625,
+      "token_ppl_within_model": 31.546088112866634,
+      "tokens_per_word": 1.2664397014534503,
+      "bytes_per_token": 4.785148576273289,
+      "mean_mass_new": 0.020065661934650713,
+      "bpb_old_vocab": 1.0311539703547516,
+      "frac_new_id_targets": 0.0
+    }
+  },
+  "eval_seconds": 64.09925580024719
+}

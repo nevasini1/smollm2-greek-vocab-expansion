@@ -1,0 +1,336 @@
+{
+  "run_name": "base",
+  "status": "done",
+  "config": {
+    "run_name": "base",
+    "workdir": "/content/vocabx_store/artifacts",
+    "seed": 0,
+    "plugins": [],
+    "notes": "",
+    "model": {
+      "name": "HuggingFaceTB/SmolLM2-135M",
+      "revision": "main",
+      "attn_implementation": "sdpa"
+    },
+    "data": {
+      "greek": [
+        {
+          "source": "wikipedia_el",
+          "train_mb": 75.0,
+          "dev_docs": 150,
+          "test_docs": 500,
+          "params": {}
+        },
+        {
+          "source": "fineweb2_el",
+          "train_mb": 75.0,
+          "dev_docs": 150,
+          "test_docs": 500,
+          "params": {}
+        },
+        {
+          "source": "belebele_el",
+          "train_mb": 0.0,
+          "dev_docs": 0,
+          "test_docs": 488,
+          "params": {}
+        }
+      ],
+      "english": [
+        {
+          "source": "fineweb_edu_en",
+          "train_mb": 30.0,
+          "dev_docs": 150,
+          "test_docs": 500,
+          "params": {}
+        },
+        {
+          "source": "bbc_news_2025_en",
+          "train_mb": 0.0,
+          "dev_docs": 0,
+          "test_docs": 500,
+          "params": {}
+        },
+        {
+          "source": "belebele_en",
+          "train_mb": 0.0,
+          "dev_docs": 0,
+          "test_docs": 488,
+          "params": {}
+        }
+      ],
+      "min_chars": 200,
+      "min_script_ratio": 0.6,
+      "shuffle_buffer": 10000,
+      "data_seed": 1234,
+      "dedup_paragraph_min_chars": 60,
+      "minhash": true,
+      "minhash_threshold": 0.7
+    },
+    "tokenizer": {
+      "extender": "none",
+      "num_new_tokens": 8000,
+      "train_mb": 60.0,
+      "min_frequency": 2,
+      "params": {}
+    },
+    "init": {
+      "method": "fvt_mean",
+      "params": {}
+    },
+    "train": {
+      "seq_len": 1024,
+      "micro_batch_size": 4,
+      "grad_accum": 8,
+      "max_steps": 0,
+      "english_ratio": 0.0,
+      "optim": {
+        "lr": 0.0003,
+        "betas": [
+          0.9,
+          0.95
+        ],
+        "eps": 1e-08,
+        "weight_decay": 0.01,
+        "grad_clip": 1.0
+      },
+      "schedule": {
+        "name": "wsd",
+        "warmup_frac": 0.075,
+        "decay_frac": 0.2,
+        "min_lr_ratio": 0.0
+      },
+      "group_lr_mult": {
+        "emb_new": 10.0
+      },
+      "stages": [],
+      "budget_mode": "tokens",
+      "budget_reference": null,
+      "allow_repeat": false,
+      "precision": "auto",
+      "grad_scaler_init": 1024.0,
+      "loss_chunk_tokens": 0,
+      "compile": false,
+      "eval_every": 50,
+      "log_every": 10,
+      "checkpoint_every_min": 5.0,
+      "wallclock_limit_min": 30.0
+    },
+    "eval": {
+      "sets": [
+        "wikipedia_el",
+        "fineweb2_el",
+        "belebele_el",
+        "fineweb_edu_en",
+        "bbc_news_2025_en",
+        "belebele_en"
+      ],
+      "dev_sets": [
+        "wikipedia_el:dev",
+        "fineweb2_el:dev",
+        "fineweb_edu_en:dev"
+      ],
+      "max_chars": 1000,
+      "max_chunks_per_doc": 4,
+      "dev_max_chunks": 200,
+      "batch_tokens": 16384,
+      "downstream": [
+        "hellaswag_el",
+        "hellaswag_en",
+        "arc_easy_el",
+        "arc_easy_en",
+        "piqa_en"
+      ],
+      "downstream_n": 500,
+      "item_seed": 0,
+      "generation": true,
+      "generation_prompts": 16,
+      "generation_bytes": 300,
+      "bootstrap_samples": 10000,
+      "full_eval_at_step0": true
+    }
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.18.0",
+    "tokenizers": "0.23.2",
+    "datasets": "4.8.5",
+    "numpy": "2.1.3",
+    "gpu": "Tesla T4",
+    "cuda_capability": "7.5"
+  },
+  "tokenizer": {
+    "key": "base-5ae0947d45a5",
+    "extender": "none",
+    "vocab_size": 49152,
+    "n_new": 0
+  },
+  "surgery": {
+    "n_new": 0
+  },
+  "max_steps": 0,
+  "tokens_per_step": 0,
+  "budget": {
+    "steps": 0,
+    "tokens": 0,
+    "tokens_by_lang": {
+      "el": 0,
+      "en": 0
+    },
+    "bytes_by_lang": {
+      "el": 0,
+      "en": 0
+    },
+    "flops": 0.0,
+    "skipped_steps": 0,
+    "train_seconds": 0.0
+  },
+  "final_eval": {
+    "intrinsic": {
+      "wikipedia_el": {
+        "language": "el",
+        "chunks": 1441,
+        "docs": 500,
+        "bpb": 1.2997476331026792,
+        "bpc": 2.3135508802858857,
+        "word_ppl": 50219.62610993874,
+        "token_ppl_within_model": 6.740429755991268,
+        "tokens_per_word": 5.672672727272727,
+        "bytes_per_token": 2.117980835285809,
+        "mean_mass_new": 0.0
+      },
+      "fineweb2_el": {
+        "language": "el",
+        "chunks": 1246,
+        "docs": 500,
+        "bpb": 1.282012884375618,
+        "bpc": 2.3067413867643167,
+        "word_ppl": 37387.55644112665,
+        "token_ppl_within_model": 6.827717205965229,
+        "tokens_per_word": 5.481075429846993,
+        "bytes_per_token": 2.161759323222221,
+        "mean_mass_new": 0.0
+      },
+      "belebele_el": {
+        "language": "el",
+        "chunks": 496,
+        "docs": 486,
+        "bpb": 1.2735078375124183,
+        "bpc": 2.314644138192272,
+        "word_ppl": 41791.29966637899,
+        "token_ppl_within_model": 6.90792924512322,
+        "tokens_per_word": 5.505566862205196,
+        "bytes_per_token": 2.1894276767852485,
+        "mean_mass_new": 0.0
+      },
+      "fineweb_edu_en": {
+        "language": "en",
+        "chunks": 1579,
+        "docs": 500,
+        "bpb": 0.9177659486641557,
+        "bpc": 0.9224256450890901,
+        "word_ppl": 49.667496334190325,
+        "token_ppl_within_model": 19.168888028859918,
+        "tokens_per_word": 1.322373569765714,
+        "bytes_per_token": 4.642463311034033,
+        "mean_mass_new": 0.0
+      },
+      "bbc_news_2025_en": {
+        "language": "en",
+        "chunks": 1698,
+        "docs": 500,
+        "bpb": 1.0485943096135812,
+        "bpc": 1.0493397507685338,
+        "word_ppl": 71.8414395856128,
+        "token_ppl_within_model": 26.03242120660176,
+        "tokens_per_word": 1.3114489072677227,
+        "bytes_per_token": 4.484324920521638,
+        "mean_mass_new": 0.0
+      },
+      "belebele_en": {
+        "language": "en",
+        "chunks": 488,
+        "docs": 483,
+        "bpb": 0.9265963775843978,
+        "bpc": 0.9274259931094454,
+        "word_ppl": 49.018984283013765,
+        "token_ppl_within_model": 21.614107156561374,
+        "tokens_per_word": 1.2664397014534503,
+        "bytes_per_token": 4.785148576273289,
+        "mean_mass_new": 0.0
+      }
+    },
+    "downstream": {
+      "hellaswag_el": {
+        "task": "hellaswag_el",
+        "language": "el",
+        "n": 500,
+        "chance": 0.25,
+        "acc": 0.264,
+        "acc_norm": 0.294,
+        "gold_bpb": 1.174006641084843,
+        "acc_norm_se": 0.02037469018169356
+      },
+      "hellaswag_en": {
+        "task": "hellaswag_en",
+        "language": "en",
+        "n": 500,
+        "chance": 0.25,
+        "acc": 0.348,
+        "acc_norm": 0.41,
+        "gold_bpb": 0.8986381200271251,
+        "acc_norm_se": 0.02199545407578575
+      },
+      "arc_easy_el": {
+        "task": "arc_easy_el",
+        "language": "el",
+        "n": 500,
+        "chance": 0.25,
+        "acc": 0.278,
+        "acc_norm": 0.254,
+        "gold_bpb": 1.6536622408999821,
+        "acc_norm_se": 0.019467100451787882
+      },
+      "arc_easy_en": {
+        "task": "arc_easy_en",
+        "language": "en",
+        "n": 500,
+        "chance": 0.25,
+        "acc": 0.648,
+        "acc_norm": 0.558,
+        "gold_bpb": 1.1566170788518657,
+        "acc_norm_se": 0.022209727598509622
+      },
+      "piqa_en": {
+        "task": "piqa_en",
+        "language": "en",
+        "n": 500,
+        "chance": 0.5,
+        "acc": 0.658,
+        "acc_norm": 0.674,
+        "gold_bpb": 1.182123288297008,
+        "acc_norm_se": 0.020963015050321363
+      }
+    },
+    "generation": {
+      "el": {
+        "script_ratio": 1.0,
+        "distinct_2": 0.3296301870414931,
+        "rep_4gram": 0.6164359071379047,
+        "bytes_per_token": 1.9646104571252314,
+        "short_or_empty": 0,
+        "n": 16
+      },
+      "en": {
+        "script_ratio": 1.0,
+        "distinct_2": 0.5313619198291054,
+        "rep_4gram": 0.3801364871230488,
+        "bytes_per_token": 4.3155766613328606,
+        "short_or_empty": 0,
+        "n": 16
+      }
+    }
+  }
+}
