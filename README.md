@@ -38,7 +38,11 @@ added without touching the training loop.
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nevasini1/smollm2-greek-vocab-expansion/blob/main/notebooks/colab_run_all.ipynb)
 
 Open [`notebooks/colab_run_all.ipynb`](notebooks/colab_run_all.ipynb) (or the badge), choose a T4 runtime, and run the
-cells top to bottom. Artifacts persist on Google Drive and every stage resumes after a disconnect.
+cells top to bottom. With `USE_DRIVE = True` (the default), artifacts persist on Google Drive and every
+stage resumes after a disconnect. With `USE_DRIVE = False` (or `"auto"` and a failed mount), they live on
+the VM disk only as long as the runtime; §8 then exports the reports, logs, summaries, eval records,
+tokenizers and data manifests as one zip (no weights or checkpoints). The committed `results/t4_run/` came
+from a VM-disk run; its README lists where that run differed from the notebook.
 
 ### Command line
 
@@ -97,7 +101,7 @@ prepare ─► held-out docs drawn FIRST (official test split / head of shuffled
               decontaminated vs ALL held-out docs (paragraph hash + MinHash), shuffled
 tokenizer ─► continued BPE on the Greek *training* pool → append 8k merges/ids
              └► QA: original ids untouched · non-Greek text tokenizes identically · round trip
-                · every new token reachable · compression + 1k–16k vocab-size curve
+                · every new token reachable · compression + vocab-size curve over merge prefixes (1k–8k for +8k tokens)
 train ─► build model (fp32) → vocabulary surgery (FVT init, tie + old-row asserts)
          → split tied embedding [old | new] → step-0 eval → WSD training with metered
            tokens/bytes/FLOPs, dev curves every 50 steps, 5-min checkpoints → final eval
@@ -113,7 +117,7 @@ The rationale for each item is in [`docs/design.md`](docs/design.md).
 | tokenizer | original (49,152) | + 8,000 continued-BPE Greek tokens (57,152 = 893×64) |
 | new-row init | – | mean of original sub-token embeddings (FVT), tied |
 | data | 150 MB Greek pool (Wikipedia + FineWeb-2), same docs, same order | same |
-| budget | 600 steps × 32,768 tokens (19.7M), seq 1024 | identical (asserted) |
+| budget | fixed once by `calibrate` → `budget.json` (T4: 453 steps × 32,768 = 14.8M tokens); 600 steps if uncalibrated; seq 1024 | identical (asserted) |
 | optimizer | AdamW (0.9, 0.95), wd 0.01 on body matrices, clip 1.0 | identical + new rows at 10× LR, wd 0 |
 | schedule | WSD, peak 3e-4, 7.5% warmup, last 20% linear decay | identical (same absolute steps) |
 | precision | fp32 master, fp16 autocast + GradScaler on T4 | identical |

@@ -88,6 +88,8 @@ candidate by its estimated Jaccard. This is Paloma's direction: drop training do
 - Exp2 at ~5.9 bytes/token reads ~116 MB.
 - A 100 MB pool would make Exp2 repeat data (≈1.2 epochs) while Exp1 does not.
 - We therefore pull **150 MB**, so both arms stay at ≤1 epoch.
+- On the free Colab T4, `calibrate` fixed 453 steps (14.8M tokens). Exp1 then read 31.8 MB (0.21 epochs)
+  and Exp2 read 90.5 MB (0.60 epochs) (`results/t4_run/`).
 
 `vocabx calibrate` prints the MB needed for the suggested step count, and the trainer warns if
 a stream wraps. (Repetition up to ~4 epochs is nearly harmless, Muennighoff et al. 2023, but it
@@ -103,7 +105,7 @@ Continued pretraining of all parameters with the original tokenizer.
 | seq len / batch | 1024 × 4 × 8 accum = 32,768 tokens/step | fits a T4 without checkpointing; shorter sequences give more updates in a small budget |
 | optimizer | AdamW (0.9, 0.95), eps 1e-8, wd 0.01 on 2-D body matrices only, clip 1.0 | mirrors SmolLM2's pretraining config |
 | peak LR | **3e-4**, shared by both arms | ~1/10 of SmolLM2's pretraining peak (3e-3), the usual re-warm level. The evidence spans 1e-4 to 5e-4 (PT/30 to PT/6), and SmolLM2's heavy over-training argues for the low end, because re-warming an annealed model forgets. The LR probe (dev data, both arms, pre-registered rule) can move it |
-| schedule | WSD: 7.5% warmup (45 steps at 600), constant, linear decay over the last 20% | SmolLM2's own schedule; decay is anchored to absolute steps so both arms anneal identically; ≥~40 warmup steps tames the re-warming stability gap |
+| schedule | WSD: 7.5% warmup (45 steps at 600; 34 at the T4's calibrated 453, slightly under the ≥~40 guideline, kept at 7.5% so both arms share one schedule), constant, linear decay over the last 20% | SmolLM2's own schedule; decay is anchored to absolute steps so both arms anneal identically; ≥~40 warmup steps tames the re-warming stability gap |
 | steps | 600 by default; fixed once by `calibrate` on Exp2 (the slower arm) → `budget.json` | must fit ≤30 min on the slower arm *and* stay ≤1 epoch of the Greek pool; persisted so a Colab reconnect cannot change it |
 | attention | SDPA; on pre-Ampere GPUs K/V are expanded before SDPA | otherwise grouped-query attention without a mask falls back to the fp32 *math* kernel on a T4 (~2× activation memory, slower); `calibrate` fails loudly if training still uses it |
 
@@ -152,8 +154,8 @@ counts them.
 On held-out text: 0 self-tokenization failures, 7,419 of 8,000 new tokens used, round-trip exact.
 
 A useful property is that the first k merges are themselves a valid k-token extension. So
-one run yields the 1k/2k/4k/8k/16k compression curve, which shows diminishing returns past
-~8k. Larger `k` values are also registered ablations.
+one run yields a compression curve over merge prefixes (1k/2k/4k/8k for the default +8k tokenizer,
+up to 16k for the k16000 ablation). Other `k` values are also registered ablations.
 
 ### 5.2 How the new rows are initialised: FVT mean, inside the convex hull
 
